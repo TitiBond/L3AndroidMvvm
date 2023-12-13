@@ -8,7 +8,7 @@ import com.example.textaudioai.player.media.MediaPlayerCustom
 sealed class PlayerViewState {
     object Loading : PlayerViewState();
     data class Success(val player: Player): PlayerViewState();
-    data class Error(val message: Int): PlayerViewState();
+    object Error: PlayerViewState();
 }
 
 sealed class MediaPlayerState {
@@ -64,7 +64,7 @@ class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
         Log.i("PlayerViewModel", "onLoadedSuccess: media loaded");
     }
 
-    override fun onLoadedError(message: Int) {
-        playerStateLiveData.value = PlayerViewState.Error(message);
+    override fun onLoadedError() {
+        playerStateLiveData.value = PlayerViewState.Error
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityPlayerBinding
 import com.example.textaudioai.player.media.MediaPlayerWrapper
 
@@ -62,7 +63,7 @@ class PlayerActivity : AppCompatActivity() {
             }
 
             is PlayerViewState.Error -> {
-                Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.player_media_failed_file_load, Toast.LENGTH_SHORT).show();
                 finish();
             }
         }

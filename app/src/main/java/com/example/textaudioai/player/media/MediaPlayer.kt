@@ -8,7 +8,7 @@ interface MediaPlayerCustom {
 
     interface Listener {
         fun onLoadedSuccess()
-        fun onLoadedError(message: Int)
+        fun onLoadedError()
     }
 
     fun loadFile(filePath: String);
@@ -28,7 +28,7 @@ class MediaPlayerWrapper(private val player: MediaPlayer,
                 listener.onLoadedSuccess();
             }
             setOnErrorListener { _, _, _ ->
-                listener.onLoadedError(R.string.player_media_failed_file_load);
+                listener.onLoadedError();
                 return@setOnErrorListener false
             }
         }
