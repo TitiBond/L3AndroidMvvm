@@ -7,26 +7,10 @@ import io.paperdb.Paper
 import java.util.Date
 
 sealed class VoiceListViewModelState{
-    class Loading(): VoiceListViewModelState(){
-        override fun equals(other: Any?): Boolean {
-            return if(other !== null){
-                this.javaClass === other.javaClass
-            }else{
-                false
-            }
-        }
-    }
+    object Loading: VoiceListViewModelState()
     data class Full(val voices: List<Voice>): VoiceListViewModelState()
-    class Empty(): VoiceListViewModelState(){
-        override fun equals(other: Any?): Boolean {
-            return if(other !== null){
-                this.javaClass === other.javaClass
-            }else{
-                false
-            }
-        }
-    }
-    class Error(): VoiceListViewModelState()
+    object Empty: VoiceListViewModelState()
+    object Error: VoiceListViewModelState()
 }
 class VoiceListViewModel: ViewModel() {
 
@@ -50,10 +34,10 @@ class VoiceListViewModel: ViewModel() {
     val state = MutableLiveData<VoiceListViewModelState>()
 
     fun loadVoices(){
-        state.value = VoiceListViewModelState.Loading()
+        state.value = VoiceListViewModelState.Loading
         voices = db.getVoices()
         if (voices.isEmpty()){
-            state.value = VoiceListViewModelState.Empty()
+            state.value = VoiceListViewModelState.Empty
         }else{
             state.value = VoiceListViewModelState.Full(voices)
         }

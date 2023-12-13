@@ -30,7 +30,7 @@ class VoiceListviewModelTest {
         //ASSERT
         Assert.assertEquals(
             listOf(
-                VoiceListViewModelState.Loading(),
+                VoiceListViewModelState.Loading,
                 VoiceListViewModelState.Full(voicesMockup)
             ),
             observer.observedValues
@@ -52,8 +52,8 @@ class VoiceListviewModelTest {
         //ASSERT
         Assert.assertEquals(
             listOf(
-                VoiceListViewModelState.Loading(),
-                VoiceListViewModelState.Empty()
+                VoiceListViewModelState.Loading,
+                VoiceListViewModelState.Empty
             ),
             observer.observedValues
         )
