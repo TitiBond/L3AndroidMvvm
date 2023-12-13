@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 
 class VoiceListActivity: AppCompatActivity() {
@@ -24,14 +22,13 @@ class VoiceListActivity: AppCompatActivity() {
 
         //CLICK ON ADD VOICE BUTTON
         binding.addVoiceButton.setOnClickListener{
-            //intent = Intent(this,CameraActivity::class.java)
-            //startActivity(intent)
+            intent = Intent(this,CameraActivity::class.java)
+            startActivity(intent)
         }
 
         binding.refreshButton.setOnClickListener {
             viewModel.loadVoices()
         }
-        binding.refreshButton.visibility
 
         viewModel.state.observe(this){ state ->
             when(state){
@@ -66,7 +63,5 @@ class VoiceListActivity: AppCompatActivity() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.loadVoices()
-
-
     }
 }
