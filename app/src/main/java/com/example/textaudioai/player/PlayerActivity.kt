@@ -38,7 +38,7 @@ class PlayerActivity : AppCompatActivity() {
                 binding.contentTextView.text = state.player.content;
             }
             is PlayerViewState.Error -> {
-                Toast.makeText(this, "We could not load the data for this item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
