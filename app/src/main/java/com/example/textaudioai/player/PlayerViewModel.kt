@@ -22,5 +22,5 @@ class PlayerViewModel: ViewModel() {
         stateLiveData.value = PlayerViewState.Success(player);
     }
 
-    // TODO: Player management play/pause/stream from player.audioUrl
+    // TODO: Player management play/pause/stream from player.filePath
 }
