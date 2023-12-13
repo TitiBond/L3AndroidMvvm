@@ -1,8 +1,10 @@
 package com.example.textaudioai.camera
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,6 +19,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class CameraActivity : AppCompatActivity() {
 
@@ -26,12 +30,21 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var imageFile: File
 
     private val getResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()) {
-            if(it.resultCode == Activity.RESULT_OK) {
-                viewModel.analysePicture(imageFile)
-                viewModel.setImagePath(imageFile.absolutePath)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val isCamera = it.data == null || it.data!!.data == null
 
+                // checks if the source is camera or gallery
+                if (isCamera) {
+                    viewModel.analysePicture(imageFile)
+                    viewModel.setImagePath(imageFile.absolutePath)
+                } else {
+                    it.data?.data?.let { uri ->
+                        val galleryImageFile = uriToFile(uri, this)
+                        viewModel.analysePicture(galleryImageFile)
+                        viewModel.setImagePath(galleryImageFile.absolutePath)
+                    }
+                }
             }
         }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +62,9 @@ class CameraActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.openCameraButton.setOnClickListener {
             takePicture()
+        }
+        binding.openGalleryButton.setOnClickListener {
+            openGallery()
         }
 
         // observes livedata to retrieve image when there is one
@@ -73,11 +89,25 @@ class CameraActivity : AppCompatActivity() {
         getResult.launch(intent)
     }
 
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        getResult.launch(intent)
+    }
+
     private fun displayImage(imagePath: String) {
         val imageFile = File(imagePath)
         if (imageFile.exists()) {
             val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
             binding.photoImageView.setImageBitmap(bitmap)
         }
+    }
+
+    private fun uriToFile(uri: Uri, context: Context): File {
+        val contentResolver = context.contentResolver
+        val tempFile = File.createTempFile("temp_image", null, context.cacheDir)
+        val inputStream = contentResolver.openInputStream(uri) as InputStream
+        val outputStream = FileOutputStream(tempFile)
+        inputStream.copyTo(outputStream)
+        return tempFile
     }
 }

@@ -10,4 +10,5 @@
     <!-- CAMERA -->
     <string name="camera_open_camera">Open camera</string>
     <string name="camera_choose_title">Choose a title…</string>
+    <string name="camera_open_gallery">Open gallery</string>
 </resources>

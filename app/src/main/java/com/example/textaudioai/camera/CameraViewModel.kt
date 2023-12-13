@@ -13,8 +13,8 @@ sealed class CameraViewModelState {
 
     data class Loading(val message: String): CameraViewModelState()
     data class OCRError(val message: String): CameraViewModelState()
-    data class OCRSuccess(val message: String): CameraViewModelState()
-    data class PromptRejected(val text: String): CameraViewModelState()
+    data class OCRSuccess(val text: String): CameraViewModelState()
+    data class PromptRejected(val message: String): CameraViewModelState()
     data class PromptValidated(val text: String): CameraViewModelState()
     data class Saved(val a: Any): CameraViewModelState()
 }
@@ -24,6 +24,7 @@ class CameraViewModel: ViewModel() {
     lateinit var api: NinjasApi
 
     private val state = MutableLiveData<CameraViewModelState>()
+    val formattedText = MutableLiveData<String>()
 
     fun setImagePath(path: String) {
         imagePath.value = path
@@ -43,22 +44,34 @@ class CameraViewModel: ViewModel() {
                 call: Call<List<TextItem>>,
                 response: Response<List<TextItem>>
             ) {
+                println("TEXT API RESPONSE :")
                 println(response.body())
+                state.value = CameraViewModelState.OCRSuccess("success")
+                response.body()?.let { formatText(it) }
             }
 
             override fun onFailure(call: Call<List<TextItem>>, t: Throwable) {
                 println(t)
+                state.value = CameraViewModelState.OCRSuccess("error in text formatting")
             }
 
         })
 
     }
 
-    fun validatePrompt() {
+    private fun validatePrompt() {
 
     }
 
-    fun rejectPrompt() {
+    private fun rejectPrompt() {
 
     }
+
+    private fun formatText(data: List<TextItem>) {
+        val formattedString = data.joinToString(separator = " ") { it.text }
+        formattedText.postValue(formattedString)
+        println("FORMATTED TEXT")
+        println(formattedText)
+    }
+
 }
