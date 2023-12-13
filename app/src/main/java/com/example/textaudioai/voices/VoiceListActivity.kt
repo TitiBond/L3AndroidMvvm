@@ -23,6 +23,12 @@ class VoiceListActivity : AppCompatActivity() {
         binding = ActivityVoiceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //CLICK ON ADD VOICE BUTTON
+        binding.addVoiceButton.setOnClickListener{
+            intent = Intent(this,CameraActivity::class.java)
+            startActivity(intent)
+        }
+
         viewModel.state.observe(this){ state ->
             when(state){
                 is VoiceListViewModelState.Empty -> {
