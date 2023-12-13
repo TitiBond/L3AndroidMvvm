@@ -3,4 +3,8 @@
 
     <!-- VOICE LIST -->
     <string name="voice_list_add_voice">Ajouter des pistes à votre liste !!</string>
+
+    <!-- CAMERA -->
+    <string name="camera_open_camera">Open camera</string>
+    <string name="camera_choose_title">Choose a title…</string>
 </resources>
