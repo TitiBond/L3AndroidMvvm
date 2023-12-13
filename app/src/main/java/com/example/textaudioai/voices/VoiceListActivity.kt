@@ -11,7 +11,7 @@ import com.example.textaudioai.camera.CameraActivity
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 import com.example.textaudioai.player.PlayerActivity
 
-class VoiceListActivity : AppCompatActivity() {
+class VoiceListActivity: AppCompatActivity() {
 
     private val viewModel: VoiceListViewModel by viewModels()
     private lateinit var binding: ActivityVoiceListBinding
@@ -19,7 +19,6 @@ class VoiceListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityVoiceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -44,7 +43,5 @@ class VoiceListActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.loadVoices()
-
-
     }
 }

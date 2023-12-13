@@ -7,5 +7,5 @@ data class Voice(
     val title:String,
     val date: Date,
     val duration: Double,
-    val image : Int
+    val image: Int
 )

@@ -9,7 +9,7 @@ import com.example.textaudioai.player.PlayerActivity
 
 class VoiceListAdapter(var voices: List<Voice>): RecyclerView.Adapter<VoiceListAdapter.ViewHolder>() {
 
-    class ViewHolder(val binding: ItemVoiceListBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder(val binding: ItemVoiceListBinding): RecyclerView.ViewHolder(binding.root){
 
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
