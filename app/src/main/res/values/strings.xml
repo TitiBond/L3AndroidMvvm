@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">textAudioAi</string>
+
+    <!-- VOICE LIST -->
+    <string name="ajout_voice">Ajouter des pistes à votre liste !!</string>
 </resources>
