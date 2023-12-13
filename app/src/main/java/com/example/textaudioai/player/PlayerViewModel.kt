@@ -19,7 +19,7 @@ sealed class MediaPlayerState {
 }
 
 
-class PlayerViewModel(): ViewModel() {
+class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
     // TODO: This view model require an access to the database for fetching the player from the id
 
     lateinit var player: MediaPlayerCustom;
@@ -58,5 +58,13 @@ class PlayerViewModel(): ViewModel() {
     fun rewindPlayback() {
         stopPlayback(true); // Stop the playback and rewind
         mediaPlayerStateLiveData.value = MediaPlayerState.Idle;
+    }
+
+    override fun onLoadedSuccess() {
+        Log.i("PlayerViewModel", "onLoadedSuccess: media loaded");
+    }
+
+    override fun onLoadedError(message: Int) {
+        playerStateLiveData.value = PlayerViewState.Error(message);
     }
 }
