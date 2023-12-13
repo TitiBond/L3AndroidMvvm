@@ -28,7 +28,6 @@ class CameraActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()) {
             if(it.resultCode == Activity.RESULT_OK){
-                val value = it.data?.getStringExtra("input")
                 viewModel.analysePicture(imageFile)
                 viewModel.setImagePath(imageFile.absolutePath)
 
