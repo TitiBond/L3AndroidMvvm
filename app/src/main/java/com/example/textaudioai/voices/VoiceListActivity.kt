@@ -10,7 +10,7 @@ import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 import com.example.textaudioai.player.PlayerActivity
 
-class VoiceListActivity : AppCompatActivity() {
+class VoiceListActivity: AppCompatActivity() {
 
     private val viewModel: VoiceListViewModel by viewModels()
     private lateinit var binding: ActivityVoiceListBinding

@@ -11,7 +11,7 @@ sealed class VoiceListViewModelState{
 }
 class VoiceListViewModel: ViewModel() {
 
-    //mock de données
+    // TODO mockup to delete when db is on
     private val voices = listOf(
         Voice(1,"title1", Date(), 200.0, R.drawable.ic_launcher_background),
         Voice(2,"title2", Date(), 200.0, R.drawable.ic_launcher_background),
@@ -28,7 +28,7 @@ class VoiceListViewModel: ViewModel() {
 
 
     fun loadVoices(){
-        //on suppose check sur db simuler avec la liste de voice
+        // TODO ask to local DB
         if (voices.size <= 0){
             state.value = VoiceListViewModelState.Empty(R.string.voice_list_add_voice)
         }else{
