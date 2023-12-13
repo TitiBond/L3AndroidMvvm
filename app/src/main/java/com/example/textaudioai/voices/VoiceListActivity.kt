@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.textaudioai.R
+import com.example.textaudioai.camera.CameraActivity
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 import com.example.textaudioai.player.PlayerActivity
 
@@ -23,7 +24,7 @@ class VoiceListActivity: AppCompatActivity() {
 
         //CLICK ON ADD VOICE BUTTON
         binding.addVoiceButton.setOnClickListener{
-            intent = Intent(this,CameraActivity::class.java)
+            intent = Intent(this, CameraActivity::class.java)
             startActivity(intent)
         }
 
@@ -42,7 +43,5 @@ class VoiceListActivity: AppCompatActivity() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.loadVoices()
-
-
     }
 }
