@@ -4,6 +4,9 @@
     <!-- VOICE LIST -->
     <string name="voice_list_add_voice">Ajouter des pistes à votre liste !!</string>
 
+    <!-- PLAYER -->
+    <string name="player_media_failed_file_load">An error occurred when loading the audio file</string>
+
     <!-- CAMERA -->
     <string name="camera_open_camera">Open camera</string>
     <string name="camera_choose_title">Choose a title…</string>
