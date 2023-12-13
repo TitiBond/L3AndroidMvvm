@@ -6,8 +6,10 @@ import com.example.textaudioai.R
 import java.util.Date
 
 sealed class VoiceListViewModelState{
+    class Loading(val message: Int): VoiceListViewModelState()
     data class Full(val voices: List<Voice>): VoiceListViewModelState()
     data class Empty(val message: Int): VoiceListViewModelState()
+    data class Error(val message: Int): VoiceListViewModelState()
 }
 class VoiceListViewModel: ViewModel() {
 
@@ -25,7 +27,6 @@ class VoiceListViewModel: ViewModel() {
         Voice(10,"title10", Date(), 200.0, R.drawable.ic_launcher_background),
     )
     val state = MutableLiveData<VoiceListViewModelState>()
-
 
     fun loadVoices(){
         // TODO ask to local DB
