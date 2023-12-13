@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 import com.example.textaudioai.camera.CameraActivity
 import io.paperdb.Paper
@@ -21,6 +22,8 @@ class VoiceListActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Paper.init(this);
+        viewModel.db = PaperDb()
+
         binding = ActivityVoiceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -38,7 +41,7 @@ class VoiceListActivity: AppCompatActivity() {
             when(state){
                 is VoiceListViewModelState.Empty -> {
                     binding.emptyListTextView.visibility = View.VISIBLE
-                    binding.emptyListTextView.setText(state.message)
+                    binding.emptyListTextView.setText(R.string.voice_list_add_voice)
                     binding.refreshButton.visibility = View.GONE
                     binding.loadingProgressBar.visibility = View.GONE
                 }
@@ -49,14 +52,14 @@ class VoiceListActivity: AppCompatActivity() {
                     binding.loadingProgressBar.visibility = View.GONE
                 }
                 is VoiceListViewModelState.Error -> {
-                    Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.voice_list_error_state, Toast.LENGTH_SHORT).show()
                     binding.refreshButton.visibility = View.VISIBLE
-                    binding.emptyListTextView.setText(state.message)
+                    binding.emptyListTextView.setText(R.string.voice_list_error_state)
                     binding.emptyListTextView.visibility = View.VISIBLE
                     binding.loadingProgressBar.visibility = View.GONE
                 }
                 is VoiceListViewModelState.Loading -> {
-                    binding.emptyListTextView.setText(state.message)
+                    binding.emptyListTextView.setText(R.string.voice_list_loading_state)
                     binding.refreshButton.visibility = View.GONE
                     binding.loadingProgressBar.visibility = View.VISIBLE
                 }

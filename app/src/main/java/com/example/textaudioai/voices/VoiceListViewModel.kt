@@ -7,12 +7,22 @@ import io.paperdb.Paper
 import java.util.Date
 
 sealed class VoiceListViewModelState{
-    class Loading(val message: Int): VoiceListViewModelState()
+    class Loading(): VoiceListViewModelState()
     data class Full(val voices: List<Voice>): VoiceListViewModelState()
-    data class Empty(val message: Int): VoiceListViewModelState()
-    data class Error(val message: Int): VoiceListViewModelState()
+    class Empty(): VoiceListViewModelState(){
+        override fun equals(other: Any?): Boolean {
+            return if(other !== null){
+                this.javaClass === other.javaClass
+            }else{
+                false
+            }
+        }
+    }
+    class Error(): VoiceListViewModelState()
 }
 class VoiceListViewModel: ViewModel() {
+
+    lateinit var db: LocalDataBase
     private var voices: List<Voice> = listOf()
 
     // TODO LINES TO DELETE WHEN ADD VOICE ITEM DONE
@@ -30,16 +40,11 @@ class VoiceListViewModel: ViewModel() {
     )*/
 
     val state = MutableLiveData<VoiceListViewModelState>()
-    init {
-        //uncomment this line and voicesMockup if you want to add voiceMockup to localdatabase
-        //Paper.book().write("voices",voicesMockup)
-        voices = Paper.book().read("voices") ?: listOf()
-    }
 
     fun loadVoices(){
-        // TODO ask to local DB
+        voices = db.getVoices()
         if (voices.isEmpty()){
-            state.value = VoiceListViewModelState.Empty(R.string.voice_list_add_voice)
+            state.value = VoiceListViewModelState.Empty()
         }else{
             state.value = VoiceListViewModelState.Full(voices)
         }
