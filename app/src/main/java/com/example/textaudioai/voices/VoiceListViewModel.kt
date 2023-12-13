@@ -7,8 +7,10 @@ import io.paperdb.Paper
 import java.util.Date
 
 sealed class VoiceListViewModelState{
+    class Loading(val message: Int): VoiceListViewModelState()
     data class Full(val voices: List<Voice>): VoiceListViewModelState()
     data class Empty(val message: Int): VoiceListViewModelState()
+    data class Error(val message: Int): VoiceListViewModelState()
 }
 class VoiceListViewModel: ViewModel() {
     private var voices: List<Voice> = listOf()
@@ -26,7 +28,6 @@ class VoiceListViewModel: ViewModel() {
         Voice(9,"title9", Date(), 200.0, R.drawable.ic_launcher_background),
         Voice(10,"title10", Date(), 200.0, R.drawable.ic_launcher_background),
     )*/
-
 
     val state = MutableLiveData<VoiceListViewModelState>()
     init {
