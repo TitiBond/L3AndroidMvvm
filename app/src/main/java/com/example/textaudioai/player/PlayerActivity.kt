@@ -32,7 +32,7 @@ class PlayerActivity : AppCompatActivity() {
                 Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
             }
             is PlayerViewState.Success -> {
-                // TODO: Add the url to the player for stream;
+                // TODO: Add the audioUrl to the player for stream;
                 binding.updatedAtTextView.text = state.player.updatedAt;
                 binding.titleTextView.text = state.player.title;
                 binding.contentTextView.text = state.player.content;
