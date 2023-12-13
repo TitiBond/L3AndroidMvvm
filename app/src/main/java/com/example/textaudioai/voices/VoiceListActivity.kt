@@ -3,13 +3,12 @@ package com.example.textaudioai.voices
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.textaudioai.R
 import com.example.textaudioai.camera.CameraActivity
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
-import com.example.textaudioai.player.PlayerActivity
+import io.paperdb.Paper
 
 class VoiceListActivity: AppCompatActivity() {
 
@@ -19,6 +18,7 @@ class VoiceListActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Paper.init(this);
         binding = ActivityVoiceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
