@@ -3,7 +3,6 @@ package com.example.textaudioai.voices
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.textaudioai.R
-import com.example.textaudioai.models.Voice
 import java.util.Date
 
 sealed class VoiceListViewModelState{
