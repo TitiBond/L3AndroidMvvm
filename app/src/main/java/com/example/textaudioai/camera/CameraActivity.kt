@@ -67,9 +67,27 @@ class CameraActivity : AppCompatActivity() {
             openGallery()
         }
 
+        viewModel.state.observe(this) {
+            updateUI(it!!)
+        }
+
         // observes livedata to retrieve image when there is one
         viewModel.imagePath.observe(this) { path ->
             displayImage(path)
+        }
+
+    }
+
+    private fun updateUI(state: CameraViewModelState) {
+        when (state) {
+            is CameraViewModelState.Loading -> {}
+            is CameraViewModelState.OCRError -> TODO()
+            is CameraViewModelState.OCRSuccess -> {
+                displayText(state.text)
+            }
+            is CameraViewModelState.PromptRejected -> TODO()
+            is CameraViewModelState.PromptValidated -> TODO()
+            is CameraViewModelState.Saved -> TODO()
         }
     }
 
@@ -100,6 +118,10 @@ class CameraActivity : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
             binding.photoImageView.setImageBitmap(bitmap)
         }
+    }
+
+    private fun displayText(text: String) {
+        binding.apiResponseTextView.text = text
     }
 
     private fun uriToFile(uri: Uri, context: Context): File {

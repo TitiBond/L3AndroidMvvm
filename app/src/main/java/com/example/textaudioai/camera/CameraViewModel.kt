@@ -23,8 +23,7 @@ class CameraViewModel: ViewModel() {
     val imagePath = MutableLiveData<String>()
     lateinit var api: NinjasApi
 
-    private val state = MutableLiveData<CameraViewModelState>()
-    val formattedText = MutableLiveData<String>()
+    val state = MutableLiveData<CameraViewModelState>()
 
     fun setImagePath(path: String) {
         imagePath.value = path
@@ -69,9 +68,9 @@ class CameraViewModel: ViewModel() {
 
     private fun formatText(data: List<TextItem>) {
         val formattedString = data.joinToString(separator = " ") { it.text }
-        formattedText.postValue(formattedString)
+        state.value = CameraViewModelState.OCRSuccess(formattedString)
         println("FORMATTED TEXT")
-        println(formattedText)
+        println(state.value)
     }
 
 }
