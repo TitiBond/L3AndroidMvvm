@@ -1,6 +1,8 @@
 package com.example.textaudioai.voices
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.example.textaudioai.testObserver
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert
@@ -17,6 +19,7 @@ class VoiceListviewModelTest {
     fun `load voices should yields state Full`(){
         //ARRANGE
         val model = VoiceListViewModel()
+        val observer = model.state.testObserver()
         val db = mock<LocalDataBase>()
         model.db = db
         whenever(db.getVoices()).thenReturn(voicesMockup)
@@ -26,8 +29,11 @@ class VoiceListviewModelTest {
 
         //ASSERT
         Assert.assertEquals(
-            VoiceListViewModelState.Full(voicesMockup),
-            model.state.value
+            listOf(
+                VoiceListViewModelState.Loading(),
+                VoiceListViewModelState.Full(voicesMockup)
+            ),
+            observer.observedValues
         )
     }
 
@@ -35,6 +41,7 @@ class VoiceListviewModelTest {
     fun `load voices should yields state Empty`(){
         //ARRANGE
         val model = VoiceListViewModel()
+        val observer = model.state.testObserver()
         val db = mock<LocalDataBase>()
         model.db = db
         whenever(db.getVoices()).thenReturn(listOf())
@@ -44,8 +51,11 @@ class VoiceListviewModelTest {
 
         //ASSERT
         Assert.assertEquals(
-            VoiceListViewModelState.Empty(),
-            model.state.value
+            listOf(
+                VoiceListViewModelState.Loading(),
+                VoiceListViewModelState.Empty()
+            ),
+            observer.observedValues
         )
     }
 }
