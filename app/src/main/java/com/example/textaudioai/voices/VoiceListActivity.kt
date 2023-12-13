@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
+import com.example.textaudioai.camera.CameraActivity
+import io.paperdb.Paper
+
 
 class VoiceListActivity: AppCompatActivity() {
 
@@ -17,12 +20,13 @@ class VoiceListActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Paper.init(this);
         binding = ActivityVoiceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //CLICK ON ADD VOICE BUTTON
         binding.addVoiceButton.setOnClickListener{
-            intent = Intent(this,CameraActivity::class.java)
+            intent = Intent(this, CameraActivity::class.java)
             startActivity(intent)
         }
 

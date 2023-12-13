@@ -3,6 +3,7 @@ package com.example.textaudioai.voices
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.textaudioai.R
+import io.paperdb.Paper
 import java.util.Date
 
 sealed class VoiceListViewModelState{
@@ -12,9 +13,10 @@ sealed class VoiceListViewModelState{
     data class Error(val message: Int): VoiceListViewModelState()
 }
 class VoiceListViewModel: ViewModel() {
+    private var voices: List<Voice> = listOf()
 
-    // TODO mockup to delete when db is on
-    private val voices = listOf(
+    // TODO LINES TO DELETE WHEN ADD VOICE ITEM DONE
+/*  private val voicesMockup = listOf(
         Voice(1,"title1", Date(), 200.0, R.drawable.ic_launcher_background),
         Voice(2,"title2", Date(), 200.0, R.drawable.ic_launcher_background),
         Voice(3,"title3", Date(), 200.0, R.drawable.ic_launcher_background),
@@ -25,17 +27,21 @@ class VoiceListViewModel: ViewModel() {
         Voice(8,"title8", Date(), 200.0, R.drawable.ic_launcher_background),
         Voice(9,"title9", Date(), 200.0, R.drawable.ic_launcher_background),
         Voice(10,"title10", Date(), 200.0, R.drawable.ic_launcher_background),
-    )
+    )*/
+
     val state = MutableLiveData<VoiceListViewModelState>()
+    init {
+        //uncomment this line and voicesMockup if you want to add voiceMockup to localdatabase
+        //Paper.book().write("voices",voicesMockup)
+        voices = Paper.book().read("voices") ?: listOf()
+    }
 
     fun loadVoices(){
         // TODO ask to local DB
-        if (voices.size <= 0){
+        if (voices.isEmpty()){
             state.value = VoiceListViewModelState.Empty(R.string.voice_list_add_voice)
         }else{
             state.value = VoiceListViewModelState.Full(voices)
         }
     }
-
-
 }
