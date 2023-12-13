@@ -2,6 +2,7 @@ package com.example.textaudioai.camera
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityCameraBinding
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
@@ -28,12 +30,10 @@ class CameraActivity : AppCompatActivity() {
             if(it.resultCode == Activity.RESULT_OK){
                 val value = it.data?.getStringExtra("input")
                 viewModel.analysePicture(imageFile)
+                viewModel.setImagePath(imageFile.absolutePath)
 
             }
         }
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,12 +43,14 @@ class CameraActivity : AppCompatActivity() {
             takePicture()
         }
 
-
+        viewModel.imagePath.observe(this) { path ->
+            displayImage(path)
+        }
     }
 
     private fun takePicture() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        imageFile = File(filesDir, "test.jpg")
+        imageFile = File(filesDir, "picture.jpg")
 
         val uri = FileProvider.getUriForFile(
             this,
@@ -57,7 +59,14 @@ class CameraActivity : AppCompatActivity() {
         )
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        getResult.launch(takePictureIntent)
+        getResult.launch(intent)
+    }
+
+    private fun displayImage(imagePath: String) {
+        val imageFile = File(imagePath)
+        if (imageFile.exists()) {
+            val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            binding.photoImageView.setImageBitmap(bitmap)
+        }
     }
 }
