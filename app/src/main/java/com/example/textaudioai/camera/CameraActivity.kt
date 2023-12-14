@@ -33,7 +33,6 @@ class CameraActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
                 val isCamera = it.data == null || it.data!!.data == null
-
                 // checks if the source is camera or gallery
                 if (isCamera) {
                     viewModel.analysePicture(imageFile)

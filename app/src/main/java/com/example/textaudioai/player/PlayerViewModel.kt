@@ -1,26 +1,82 @@
 package com.example.textaudioai.player
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.textaudioai.player.media.MediaPlayerCustom
+import com.example.textaudioai.repositories.Player
+import com.example.textaudioai.repositories.PlayersRepository
 
 sealed class PlayerViewState {
     object Loading : PlayerViewState();
     data class Success(val player: Player): PlayerViewState();
-    data class Error(val message: String): PlayerViewState();
+    object Error: PlayerViewState();
 }
 
-class PlayerViewModel: ViewModel() {
-    // TODO: This view model require an access to the database for fetching the player from the id
-    val stateLiveData = MutableLiveData<PlayerViewState>();
+sealed class MediaPlayerState {
+    object Idle: MediaPlayerState();
+    object Started : MediaPlayerState();
+
+    object Stopped: MediaPlayerState();
+}
+
+
+private const val TAG = "PlayerViewModel";
+
+class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
+    lateinit var player: MediaPlayerCustom;
+    lateinit var repository: PlayersRepository;
+    val playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Loading);
+    val mediaPlayerStateLiveData = MutableLiveData<MediaPlayerState>(MediaPlayerState.Idle);
 
     fun loadPlayer(id: Int) {
-        stateLiveData.value = PlayerViewState.Loading;
+        try {
+            val player = repository.findOnePlayerById(id);
+            if (player == null) {
+                Log.i(TAG, "loadPlayer: Player not found from id $id");
+                playerStateLiveData.value = PlayerViewState.Error;
+                return;
+            }
 
-        // TODO: Add a BDD call with Pepper and retrieve the player from the id
-        val player = Player(id, "Random title", "http://smt", "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ", "2023");
-
-        stateLiveData.value = PlayerViewState.Success(player);
+            playerStateLiveData.value = PlayerViewState.Success(player);
+        } catch (err: Exception) {
+            Log.i(TAG, "loadPlayer: Failed to retrieve player", err);
+            playerStateLiveData.value = PlayerViewState.Error;
+        }
     }
 
-    // TODO: Player management play/pause/stream from player.audioUrl
+    fun loadMediaPlayer(filePath: String) {
+        player.loadFile(filePath);
+    }
+
+    fun handlePlaybackState() {
+        if (player.isPlaying()) {
+            stopPlayback(false);
+        } else {
+            startPlayback();
+        }
+    }
+
+    private fun startPlayback() {
+        player.start();
+        mediaPlayerStateLiveData.value = MediaPlayerState.Started;
+    }
+
+    fun stopPlayback(rewind: Boolean) {
+        player.stop(rewind);
+        mediaPlayerStateLiveData.value = MediaPlayerState.Stopped;
+    }
+
+    fun rewindPlayback() {
+        stopPlayback(true); // Stop the playback and rewind
+        mediaPlayerStateLiveData.value = MediaPlayerState.Idle;
+    }
+
+    override fun onLoadedSuccess() {
+        Log.i("PlayerViewModel", "onLoadedSuccess: media loaded");
+    }
+
+    override fun onLoadedError() {
+        playerStateLiveData.value = PlayerViewState.Error
+    }
 }

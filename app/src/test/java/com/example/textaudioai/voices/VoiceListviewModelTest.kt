@@ -1,0 +1,61 @@
+package com.example.textaudioai.voices
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.example.textaudioai.testObserver
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
+
+class VoiceListviewModelTest {
+
+    @Rule
+    @JvmField
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Test
+    fun `load voices should yields state Full`(){
+        //ARRANGE
+        val model = VoiceListViewModel()
+        val observer = model.state.testObserver()
+        val db = mock<LocalDataBase>()
+        model.db = db
+        whenever(db.getVoices()).thenReturn(voicesMockup)
+
+        //ACT
+        model.loadVoices()
+
+        //ASSERT
+        Assert.assertEquals(
+            listOf(
+                VoiceListViewModelState.Loading,
+                VoiceListViewModelState.Full(voicesMockup)
+            ),
+            observer.observedValues
+        )
+    }
+
+    @Test
+    fun `load voices should yields state Empty`(){
+        //ARRANGE
+        val model = VoiceListViewModel()
+        val observer = model.state.testObserver()
+        val db = mock<LocalDataBase>()
+        model.db = db
+        whenever(db.getVoices()).thenReturn(listOf())
+
+        //ACT
+        model.loadVoices()
+
+        //ASSERT
+        Assert.assertEquals(
+            listOf(
+                VoiceListViewModelState.Loading,
+                VoiceListViewModelState.Empty
+            ),
+            observer.observedValues
+        )
+    }
+}
