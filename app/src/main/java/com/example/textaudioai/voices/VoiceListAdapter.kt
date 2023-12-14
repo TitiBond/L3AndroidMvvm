@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.textaudioai.databinding.ItemVoiceListBinding
 import com.example.textaudioai.player.PlayerActivity
+import com.example.textaudioai.repositories.Player
 
-class VoiceListAdapter(var voices: List<Voice>): RecyclerView.Adapter<VoiceListAdapter.ViewHolder>() {
+class VoiceListAdapter(var voices: List<Player>): RecyclerView.Adapter<VoiceListAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemVoiceListBinding): RecyclerView.ViewHolder(binding.root){
 
