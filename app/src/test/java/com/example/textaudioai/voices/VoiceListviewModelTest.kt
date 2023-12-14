@@ -121,7 +121,7 @@ class VoiceListviewModelTest {
     }
 
     @Test
-    fun `filter voices with text ch should return normal list`(){
+    fun `filter voices with text ch should return empty list`(){
         //ARRANGE
         val model = VoiceListViewModel()
         val db = mock<PaperPlayersRepository>()
@@ -134,7 +134,7 @@ class VoiceListviewModelTest {
 
         //ASSERT
         Assert.assertEquals(
-            VoiceListViewModelState.Full(voicesMockup),
+            VoiceListViewModelState.Full(listOf()),
             model.state.value
         )
     }
@@ -243,6 +243,8 @@ class VoiceListviewModelTest {
                 VoiceListViewModelState.Full(voicesMockup),
                 VoiceListViewModelState.Full(sortAscResMockup),
                 VoiceListViewModelState.Full(sortAscTextResMockup),
+                VoiceListViewModelState.Loading,
+                VoiceListViewModelState.Full(voicesMockup),
                 VoiceListViewModelState.Full(sortAscResMockup),
                 VoiceListViewModelState.Full(voicesMockup),
                 VoiceListViewModelState.Full(voicesMockup),

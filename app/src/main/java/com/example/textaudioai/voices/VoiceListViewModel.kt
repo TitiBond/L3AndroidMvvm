@@ -49,34 +49,25 @@ class VoiceListViewModel: ViewModel() {
 
     fun updateFilterText(text: String){
         filterText = text.lowercase()
-        if (filterText.length >= 3){
-            filterByTitle()
-        }else{
-            if(dateFilterType == 0){
-                loadVoices()
-            }else{
-                filteredVoices = voices
-                filterByDate(dateFilterType)
-            }
+        if(filterText.isEmpty()) {
+            loadVoices()
         }
+        filter()
     }
 
     fun updateDateFilter(value:Int){
         dateFilterType = value
-        filterByDate(value)
+        filter()
     }
 
-    fun filterByDate(value:Int){
-        when(value){
-            0-> filteredVoices = filteredVoices.sortedBy { it.id }
-            1-> filteredVoices = filteredVoices.sortedBy { it.updatedAt }
-            2-> filteredVoices = filteredVoices.sortedByDescending { it.updatedAt }
+
+    fun filter(){
+        filteredVoices = voices.filter { it.title.lowercase().contains(filterText) }
+        when(dateFilterType){
+            0-> state.value = VoiceListViewModelState.Full(filteredVoices.sortedBy { it.id })
+            1-> state.value = VoiceListViewModelState.Full(filteredVoices.sortedBy { it.updatedAt })
+            2-> state.value = VoiceListViewModelState.Full(filteredVoices.sortedByDescending { it.updatedAt })
         }
-        state.value = VoiceListViewModelState.Full(filteredVoices)
-    }
-    fun filterByTitle(){
-        filteredVoices = filteredVoices.filter { it.title.lowercase().contains(filterText) }
-        state.value = VoiceListViewModelState.Full(filteredVoices)
     }
 }
 
