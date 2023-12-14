@@ -9,11 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.textaudioai"
-<<<<<<< HEAD
         minSdkVersion 21
-=======
-        minSdkVersion 23
->>>>>>> dev
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
