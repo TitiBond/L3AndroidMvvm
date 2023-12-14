@@ -58,19 +58,23 @@ class CameraViewModel: ViewModel() {
 
     }
 
-    private fun validatePrompt() {
+    fun editTitle() {
 
     }
 
-    private fun rejectPrompt() {
+    fun validatePrompt(title: String, text: String) {
+        state.value = CameraViewModelState.PromptValidated("Yeaaahh !!")
+        println(title)
+        println(text)
+    }
 
+    fun rejectPrompt() {
+        state.value = CameraViewModelState.PromptRejected("I hope you feel sorry to hurt our little API like that. Nobody loves rejection.")
     }
 
     private fun formatText(data: List<TextItem>) {
         val formattedString = data.joinToString(separator = " ") { it.text }
         state.value = CameraViewModelState.OCRSuccess(formattedString)
-        println("FORMATTED TEXT")
-        println(state.value)
     }
 
 }

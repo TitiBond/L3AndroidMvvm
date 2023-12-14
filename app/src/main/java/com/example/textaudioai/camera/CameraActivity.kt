@@ -94,7 +94,8 @@ class CameraActivity : AppCompatActivity() {
                 showValidationButtons()
             }
             is CameraViewModelState.PromptRejected -> TODO()
-            is CameraViewModelState.PromptValidated -> TODO()
+            is CameraViewModelState.PromptValidated -> {
+            }
             is CameraViewModelState.Saved -> TODO()
         }
     }
@@ -107,10 +108,12 @@ class CameraActivity : AppCompatActivity() {
         binding.rejectPromptButton.visibility = View.VISIBLE
 
         binding.validatePromptButton.setOnClickListener {
-            // Logique pour valider le texte
+            val title = binding.titleEditText.text.toString()
+            val text = binding.apiResponseTextView.text.toString()
+            viewModel.validatePrompt(title, text)
         }
         binding.rejectPromptButton.setOnClickListener {
-
+            viewModel.rejectPrompt()
         }
     }
 
