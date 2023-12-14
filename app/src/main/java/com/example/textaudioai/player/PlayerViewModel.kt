@@ -31,7 +31,7 @@ class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
 
     fun loadPlayer(id: Int) {
         try {
-            val player = repository.findOnePlayer(id);
+            val player = repository.findOnePlayerById(id);
             if (player == null) {
                 Log.i(TAG, "loadPlayer: Player not found from id $id");
                 playerStateLiveData.value = PlayerViewState.Error;

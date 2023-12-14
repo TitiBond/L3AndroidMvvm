@@ -17,7 +17,7 @@ data class Player(
 
 interface PaperPlayersRepository {
     fun findAllPlayers(): List<Player>;
-    fun findOnePlayer(playerId: Int): Player?;
+    fun findOnePlayerById(playerId: Int): Player?;
     fun savePlayer(players: List<Player>);
     fun updatePlayer(player: Player): Player?;
     // Bool represent success or fail
@@ -35,7 +35,7 @@ class PlayerRepository: PaperPlayersRepository {
         return Paper.book().read(collection) ?: listOf();
     }
 
-    override fun findOnePlayer(playerId: Int): Player? {
+    override fun findOnePlayerById(playerId: Int): Player? {
         val players = findAllPlayers();
         // Checking for the size prevent the iteration of the loop.
         // But with it or without it, it will possibly return null anyway.
