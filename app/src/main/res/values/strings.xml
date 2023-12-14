@@ -9,6 +9,12 @@
     <string name="voice_list_loading_state">Loading...</string>
     <string name="voice_list_refresh_button_text">Retry</string>
 
+    <string-array name="voice_list_sort_filter_texts">
+        <item>NONE</item>
+        <item>ASC</item>
+        <item>DESC</item>
+    </string-array>
+
     <!-- PLAYER -->
     <string name="player_media_failed_file_load">An error occurred when loading the audio file</string>
 
