@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
@@ -86,17 +87,22 @@ class CameraActivity : AppCompatActivity() {
             is CameraViewModelState.Loading -> {}
 
             is CameraViewModelState.OCRError -> {
-
+                Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
             }
 
             is CameraViewModelState.OCRSuccess -> {
                 displayText(state.text)
                 showValidationButtons()
             }
-            is CameraViewModelState.PromptRejected -> TODO()
-            is CameraViewModelState.PromptValidated -> {
+            is CameraViewModelState.PromptRejected -> {
+                resetUI()
             }
-            is CameraViewModelState.Saved -> TODO()
+            is CameraViewModelState.PromptValidated -> {
+                finish()
+            }
+            is CameraViewModelState.Saved -> {
+                finish()
+            }
         }
     }
 
@@ -115,6 +121,13 @@ class CameraActivity : AppCompatActivity() {
         binding.rejectPromptButton.setOnClickListener {
             viewModel.rejectPrompt()
         }
+    }
+
+    private fun showCameraButtons() {
+        binding.openCameraButton.visibility = View.VISIBLE
+        binding.openGalleryButton.visibility = View.VISIBLE
+        binding.validatePromptButton.visibility = View.GONE
+        binding.rejectPromptButton.visibility = View.GONE
     }
 
     private fun takePicture() {
@@ -157,5 +170,14 @@ class CameraActivity : AppCompatActivity() {
         val outputStream = FileOutputStream(tempFile)
         inputStream.copyTo(outputStream)
         return tempFile
+    }
+
+    private fun resetUI() {
+        binding.photoImageView.setImageBitmap(null)
+
+        binding.apiResponseTextView.text = ""
+        binding.titleEditText.text.clear()
+
+        showCameraButtons()
     }
 }

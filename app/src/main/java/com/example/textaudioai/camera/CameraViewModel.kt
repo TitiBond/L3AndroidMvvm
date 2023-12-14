@@ -3,8 +3,10 @@ package com.example.textaudioai.camera
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +38,8 @@ class CameraViewModel: ViewModel() {
             .createFormData(
                 "image",
                 imageFile.name,
-                RequestBody.create(MediaType.parse("image/*"), imageFile))
+                imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+            )
         val call = api.uploadImage(part, "EtVLP/4mR4f5MZHhQba0rA==YJCYfIwmCvWErpE1")
         call.enqueue(object: Callback<List<TextItem>> {
             override fun onResponse(
@@ -58,14 +61,9 @@ class CameraViewModel: ViewModel() {
 
     }
 
-    fun editTitle() {
-
-    }
-
     fun validatePrompt(title: String, text: String) {
         state.value = CameraViewModelState.PromptValidated("Yeaaahh !!")
-        println(title)
-        println(text)
+        saveTextWithTitle(title, text)
     }
 
     fun rejectPrompt() {
@@ -75,6 +73,11 @@ class CameraViewModel: ViewModel() {
     private fun formatText(data: List<TextItem>) {
         val formattedString = data.joinToString(separator = " ") { it.text }
         state.value = CameraViewModelState.OCRSuccess(formattedString)
+    }
+
+    private fun saveTextWithTitle(title: String, text: String) {
+        println(title)
+        println(text)
     }
 
 }
