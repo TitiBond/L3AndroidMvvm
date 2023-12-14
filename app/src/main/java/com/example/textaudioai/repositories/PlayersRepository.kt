@@ -16,6 +16,7 @@ data class Player(
 )
 
 interface PaperPlayersRepository {
+    @Throws(Exception::class)
     fun findAllPlayers(): List<Player>;
     fun findManyByTOBEDEFINED(): List<Player>;
     fun findOnePlayerById(playerId: Int): Player?;

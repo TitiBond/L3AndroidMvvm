@@ -2,44 +2,40 @@ package com.example.textaudioai.voices
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.textaudioai.R
-import io.paperdb.Paper
-import java.util.Date
+import com.example.textaudioai.repositories.PaperPlayersRepository
+import com.example.textaudioai.repositories.Player
 
 sealed class VoiceListViewModelState{
     object Loading: VoiceListViewModelState()
-    data class Full(val voices: List<Voice>): VoiceListViewModelState()
+    data class Full(val voices: List<Player>): VoiceListViewModelState()
     object Empty: VoiceListViewModelState()
-    object Error: VoiceListViewModelState()
+    data class Error(val error: Exception): VoiceListViewModelState()
 }
+
+
 class VoiceListViewModel: ViewModel() {
 
-    lateinit var db: LocalDataBase
-    private var voices: List<Voice> = listOf()
-
-    // TODO LINES TO DELETE WHEN ADD VOICE ITEM DONE
-/*  private val voicesMockup = listOf(
-        Voice(1,"title1", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(2,"title2", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(3,"title3", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(4,"title4", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(5,"title5", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(6,"title6", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(7,"title7", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(8,"title8", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(9,"title9", Date(), 200.0, R.drawable.ic_launcher_background),
-        Voice(10,"title10", Date(), 200.0, R.drawable.ic_launcher_background),
-    )*/
-
+    lateinit var repository: PaperPlayersRepository
+    private var voices: List<Player> = listOf()
     val state = MutableLiveData<VoiceListViewModelState>()
 
+    // TODO LINES TO DELETE WHEN ADD VOICE ITEM DONE
+ /*private val voicesMockup = listOf(
+        Player(1,"Bonjour",R.drawable.ic_launcher_background,"",5.0,"", Date(), Date() ),
+        Player(2,"coucou",R.drawable.ic_launcher_background,"",6.0,"", Date(), Date() ),
+        Player(3,"Robert",R.drawable.ic_launcher_background,"",7.5,"", Date(), Date() ),
+    )*/
     fun loadVoices(){
         state.value = VoiceListViewModelState.Loading
-        voices = db.getVoices()
-        if (voices.isEmpty()){
-            state.value = VoiceListViewModelState.Empty
-        }else{
-            state.value = VoiceListViewModelState.Full(voices)
+        try {
+            voices = repository.findAllPlayers()
+            if (voices.isEmpty()){
+                state.value = VoiceListViewModelState.Empty
+            }else{
+                state.value = VoiceListViewModelState.Full(voices)
+            }
+        }catch (err: Exception){
+            state.value = VoiceListViewModelState.Error(err)
         }
     }
 }

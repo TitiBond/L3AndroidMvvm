@@ -1,7 +1,10 @@
 package com.example.textaudioai.voices
 
+import android.util.Log
+import com.example.textaudioai.repositories.Player
 import java.util.Date
 
 val voicesMockup = listOf(
-    Voice(1,"title1", Date(), 200.0, 1)
+    Player(1,"Bonjour",4,"",5.0,"", Date(), Date() )
 )
+val errMock: Exception = java.lang.Exception("coucou")
