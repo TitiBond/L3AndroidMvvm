@@ -1,16 +1,20 @@
 package com.example.textaudioai.camera
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+
 sealed class CameraViewModelState {
 
     data class Loading(val message: String): CameraViewModelState()
@@ -24,13 +28,19 @@ class CameraViewModel: ViewModel() {
 
     val imagePath = MutableLiveData<String>()
     lateinit var api: NinjasApi
+    private lateinit var imageFile: File
 
     val state = MutableLiveData<CameraViewModelState>()
 
-    fun setImagePath(path: String) {
+    fun createImageFile(context: Context): Uri {
+        imageFile = File(context.filesDir, "picture.jpg")
+        return FileProvider.getUriForFile(context, "com.example.android.fileprovider", imageFile)
+    }
+
+    private fun setImagePath(path: String) {
         imagePath.value = path
     }
-    fun analysePicture(imageFile: File) {
+    private fun analysePicture(imageFile: File) {
         state.value = CameraViewModelState.Loading("Processing...")
 
         // CALL API
@@ -61,6 +71,24 @@ class CameraViewModel: ViewModel() {
 
     }
 
+    fun handleActivityResult(resultCode: Int, data: Intent?, fileProvider: (Uri) -> File) {
+        if (resultCode == Activity.RESULT_OK) {
+            val imageUri = data?.data
+            if (imageUri != null) {
+                val imageFile = fileProvider(imageUri)
+                analysePicture(imageFile)
+                setImagePath(imageFile.absolutePath)
+            } else {
+                imageFile.let { file ->
+                    analysePicture(file)
+                    setImagePath(file.absolutePath)
+                }
+            }
+        } else {
+            state.value = CameraViewModelState.OCRError("Action cancelled or failed")
+        }
+    }
+
     fun validatePrompt(title: String, text: String) {
         state.value = CameraViewModelState.PromptValidated("Yeaaahh !!")
         saveTextWithTitle(title, text)
@@ -79,5 +107,4 @@ class CameraViewModel: ViewModel() {
         println(title)
         println(text)
     }
-
 }

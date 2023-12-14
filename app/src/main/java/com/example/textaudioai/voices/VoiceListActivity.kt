@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 import com.example.textaudioai.camera.CameraActivity
-import com.example.textaudioai.repositories.PlayerRepository
+import com.example.textaudioai.repositories.PlayersRepository
 import io.paperdb.Paper
 
 private const val TAG = "VoicesViewModel";
@@ -24,7 +24,7 @@ class VoiceListActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Paper.init(this);
-        viewModel.repository = PlayerRepository()
+        viewModel.repository = PlayersRepository()
 
         binding = ActivityVoiceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
