@@ -8,6 +8,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
@@ -75,18 +76,41 @@ class CameraActivity : AppCompatActivity() {
             displayImage(path)
         }
 
+        binding.validatePromptButton.visibility = View.GONE
+        binding.rejectPromptButton.visibility = View.GONE
+
     }
 
     private fun updateUI(state: CameraViewModelState) {
         when (state) {
             is CameraViewModelState.Loading -> {}
-            is CameraViewModelState.OCRError -> TODO()
+
+            is CameraViewModelState.OCRError -> {
+
+            }
+
             is CameraViewModelState.OCRSuccess -> {
                 displayText(state.text)
+                showValidationButtons()
             }
             is CameraViewModelState.PromptRejected -> TODO()
             is CameraViewModelState.PromptValidated -> TODO()
             is CameraViewModelState.Saved -> TODO()
+        }
+    }
+
+    private fun showValidationButtons() {
+        binding.openCameraButton.visibility = View.GONE
+        binding.openGalleryButton.visibility = View.GONE
+
+        binding.validatePromptButton.visibility = View.VISIBLE
+        binding.rejectPromptButton.visibility = View.VISIBLE
+
+        binding.validatePromptButton.setOnClickListener {
+            // Logique pour valider le texte
+        }
+        binding.rejectPromptButton.setOnClickListener {
+
         }
     }
 

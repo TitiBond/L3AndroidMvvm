@@ -10,9 +10,8 @@
         android:id="@+id/photoImageView"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -57,6 +56,26 @@
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/photoImageView"
         app:layout_constraintStart_toStartOf="@+id/photoImageView"
-        app:layout_constraintTop_toBottomOf="@+id/openGalleryButton" />
+        app:layout_constraintTop_toBottomOf="@+id/rejectPromptButton" />
+
+    <Button
+        android:id="@+id/validatePromptButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Validate"
+        app:layout_constraintEnd_toEndOf="@+id/photoImageView"
+        app:layout_constraintStart_toStartOf="@+id/photoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
+
+    <Button
+        android:id="@+id/rejectPromptButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Reject"
+        app:layout_constraintEnd_toEndOf="@+id/photoImageView"
+        app:layout_constraintStart_toStartOf="@+id/photoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/validatePromptButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
