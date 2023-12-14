@@ -7,6 +7,7 @@ interface LocalDataBase {
     fun saveVoices(voices: List<Voice>)
 }
 
+@Deprecated("Use PlayersRepository from the package repository instead")
 class PaperDb: LocalDataBase{
     override fun getVoices(): List<Voice> {
         return Paper.book().read("voices") ?: listOf()

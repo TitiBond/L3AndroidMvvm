@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.textaudioai.player.media.MediaPlayerCustom
+import com.example.textaudioai.repositories.Player
+import com.example.textaudioai.repositories.PlayersRepository
 
 sealed class PlayerViewState {
     object Loading : PlayerViewState();
@@ -19,18 +21,28 @@ sealed class MediaPlayerState {
 }
 
 
-class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
-    // TODO: This view model require an access to the database for fetching the player from the id
+private const val TAG = "PlayerViewModel";
 
+class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
     lateinit var player: MediaPlayerCustom;
+    lateinit var repository: PlayersRepository;
     val playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Loading);
     val mediaPlayerStateLiveData = MutableLiveData<MediaPlayerState>(MediaPlayerState.Idle);
 
     fun loadPlayer(id: Int) {
-        // TODO: Add a BDD call with Pepper and retrieve the player from the id
-        val player = Player(id, "Random title", "/to/file/path", "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ", "2023");
+        try {
+            val player = repository.findOnePlayerById(id);
+            if (player == null) {
+                Log.i(TAG, "loadPlayer: Player not found from id $id");
+                playerStateLiveData.value = PlayerViewState.Error;
+                return;
+            }
 
-        playerStateLiveData.value = PlayerViewState.Success(player);
+            playerStateLiveData.value = PlayerViewState.Success(player);
+        } catch (err: Exception) {
+            Log.i(TAG, "loadPlayer: Failed to retrieve player", err);
+            playerStateLiveData.value = PlayerViewState.Error;
+        }
     }
 
     fun loadMediaPlayer(filePath: String) {
