@@ -19,10 +19,11 @@ interface PaperPlayersRepository {
     fun findAllPlayers(): List<Player>;
     fun findManyByTOBEDEFINED(): List<Player>;
     fun findOnePlayerById(playerId: Int): Player?;
-    fun savePlayer(players: List<Player>);
+    fun savePlayer(player: Player): Boolean;
     fun updatePlayer(player: Player): Player?;
     // Bool represent success or fail
     fun deletePlayerById(playerId: Int): Boolean;
+    fun getNewIndex(): Int;
 }
 
 /**
@@ -49,7 +50,17 @@ class PlayersRepository: PaperPlayersRepository {
         TODO("Retrieve all players, iter and filter from a filter parameter of this function")
     }
 
-    override fun savePlayer(players: List<Player>) {
+    override fun savePlayer(player: Player): Boolean {
+        val players = findAllPlayers();
+        val index = players.indexOfFirst { it.title == player.title }
+        if (index != -1) return false;
+
+        players.plus(player);
+        saveAllPlayers(players);
+        return true;
+    }
+
+    private fun saveAllPlayers(players: List<Player>) {
         Paper.book().write(collection, players);
     }
 
@@ -62,7 +73,7 @@ class PlayersRepository: PaperPlayersRepository {
 
         val updatedPlayers = players.toMutableList();
         updatedPlayers[index] = player;
-        savePlayer(updatedPlayers);
+        saveAllPlayers(updatedPlayers);
         return player;
     }
 
@@ -75,7 +86,12 @@ class PlayersRepository: PaperPlayersRepository {
 
         val updatedPlayers = players.toMutableList();
         updatedPlayers.removeAt(index);
-        savePlayer(updatedPlayers);
+        saveAllPlayers(updatedPlayers);
         return true;
+    }
+
+    override fun getNewIndex(): Int {
+        val players = findAllPlayers();
+        return players.last().id + 1;
     }
 }
