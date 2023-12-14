@@ -9,6 +9,8 @@ import androidx.activity.viewModels
 import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityPlayerBinding
 import com.example.textaudioai.player.media.MediaPlayerWrapper
+import com.example.textaudioai.repositories.PlayerRepository
+import io.paperdb.Paper
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding;
@@ -16,6 +18,9 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
+        Paper.init(this);
+        viewModel.repository = PlayerRepository();
+
         binding = ActivityPlayerBinding.inflate(layoutInflater);
         setContentView(binding.root);
 
@@ -56,7 +61,7 @@ class PlayerActivity : AppCompatActivity() {
                     viewModel.rewindPlayback();
                 }
 
-                binding.updatedAtTextView.text = state.player.updatedAt;
+                binding.updatedAtTextView.text = state.player.updatedAt.toString();
                 binding.titleTextView.text = state.player.title;
                 binding.contentTextView.text = state.player.content;
                 viewModel.loadMediaPlayer(state.player.filePath);
