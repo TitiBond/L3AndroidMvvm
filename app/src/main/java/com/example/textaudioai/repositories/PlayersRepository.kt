@@ -17,6 +17,7 @@ data class Player(
 
 interface PaperPlayersRepository {
     fun findAllPlayers(): List<Player>;
+    fun findManyByTOBEDEFINED(): List<Player>;
     fun findOnePlayerById(playerId: Int): Player?;
     fun savePlayer(players: List<Player>);
     fun updatePlayer(player: Player): Player?;
@@ -42,6 +43,10 @@ class PlayerRepository: PaperPlayersRepository {
         if (players.isEmpty()) return null;
 
         return players.find { it.id == playerId };
+    }
+
+    override fun findManyByTOBEDEFINED(): List<Player> {
+        TODO("Retrieve all players, iter and filter from a filter parameter of this function")
     }
 
     override fun savePlayer(players: List<Player>) {
