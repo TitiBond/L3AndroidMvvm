@@ -5,7 +5,7 @@ import java.util.Date
 
 data class Player(
     val id: Int,
-    val title:String,
+    var title: String,
     val image: Int,
     val filePath: String,
     // Is it really necessary ?
@@ -22,14 +22,14 @@ interface PaperPlayersRepository {
     fun savePlayer(players: List<Player>);
     fun updatePlayer(player: Player): Player?;
     // Bool represent success or fail
-    fun deletePlayer(playerId: Int): Boolean;
+    fun deletePlayerById(playerId: Int): Boolean;
 }
 
 /**
  * It it possible for the player repository to throw an exception,
  * So you are required to wrap any call in a try catch.
  */
-class PlayerRepository: PaperPlayersRepository {
+class PlayersRepository: PaperPlayersRepository {
     private val collection = "players";
 
     override fun findAllPlayers(): List<Player> {
@@ -66,7 +66,7 @@ class PlayerRepository: PaperPlayersRepository {
         return player;
     }
 
-    override fun deletePlayer(playerId: Int): Boolean {
+    override fun deletePlayerById(playerId: Int): Boolean {
         val players = findAllPlayers();
         if (players.isEmpty()) return false;
 
