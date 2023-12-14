@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.textaudioai.player.media.MediaPlayerCustom
 import com.example.textaudioai.repositories.Player
-import com.example.textaudioai.repositories.PlayerRepository
+import com.example.textaudioai.repositories.PlayersRepository
 
 sealed class PlayerViewState {
     object Loading : PlayerViewState();
@@ -25,7 +25,7 @@ private const val TAG = "PlayerViewModel";
 
 class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
     lateinit var player: MediaPlayerCustom;
-    lateinit var repository: PlayerRepository;
+    lateinit var repository: PlayersRepository;
     val playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Loading);
     val mediaPlayerStateLiveData = MutableLiveData<MediaPlayerState>(MediaPlayerState.Idle);
 
