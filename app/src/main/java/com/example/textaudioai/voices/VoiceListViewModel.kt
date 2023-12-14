@@ -18,22 +18,25 @@ sealed class VoiceListViewModelState{
 
 class VoiceListViewModel: ViewModel() {
 
-
     lateinit var repository: PaperPlayersRepository
     private var voices: List<Player> = listOf()
+    private var filteredVoices: List<Player> = listOf()
     val state = MutableLiveData<VoiceListViewModelState>()
     private var filterText: String = ""
+    private var dateFilterType: Int = 0
 
     // TODO LINES TO DELETE WHEN ADD VOICE ITEM DONE
  /*private val voicesMockup = listOf(
-        Player(1,"Bonjour", R.drawable.ic_launcher_background,"",5.0,"", Date(), Date() ),
+        Player(1,"Bonjour", R.drawable.ic_launcher_background,"",5.0,"", Date(2024,11,20), Date() ),
         Player(2,"coucou",R.drawable.ic_launcher_background,"",6.0,"", Date(), Date() ),
         Player(3,"Robert",R.drawable.ic_launcher_background,"",7.5,"", Date(), Date() ),
+        Player(4,"Roberto",R.drawable.ic_launcher_background,"",7.5,"", Date(2023), Date() ),
     )*/
     fun loadVoices(){
         state.value = VoiceListViewModelState.Loading
         try {
             voices = repository.findAllPlayers()
+            filteredVoices = voices
             if (voices.isEmpty()){
                 state.value = VoiceListViewModelState.Empty
             }else{
@@ -49,17 +52,32 @@ class VoiceListViewModel: ViewModel() {
         if (filterText.length >= 3){
             filterByTitle()
         }else{
-            loadVoices()
+            if(dateFilterType == 0){
+                loadVoices()
+            }else{
+                filteredVoices = voices
+                filterByDate(dateFilterType)
+            }
         }
     }
 
-    fun filterByTitle(){
-        try {
-            var filteredPlayers = repository.findManyByTitle(filterText)
-            state.value = VoiceListViewModelState.Full(filteredPlayers)
-        }catch (err: Exception){
-            state.value = VoiceListViewModelState.Error(err)
-        }
+    fun updateDateFilter(value:Int){
+        dateFilterType = value
+        filterByDate(value)
+    }
 
+    fun filterByDate(value:Int){
+        when(value){
+            0-> filteredVoices = filteredVoices.sortedBy { it.id }
+            1-> filteredVoices = filteredVoices.sortedBy { it.updatedAt }
+            2-> filteredVoices = filteredVoices.sortedByDescending { it.updatedAt }
+        }
+        state.value = VoiceListViewModelState.Full(filteredVoices)
+    }
+    fun filterByTitle(){
+        filteredVoices = filteredVoices.filter { it.title.lowercase().contains(filterText) }
+        state.value = VoiceListViewModelState.Full(filteredVoices)
     }
 }
+
+
