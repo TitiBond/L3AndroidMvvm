@@ -2,6 +2,7 @@
     <string name="app_name">textAudioAi</string>
 
     <!-- VOICE LIST -->
+    <string name="voice_list_filter_placeholder">Enter title...</string>
     <string name="voice_list_add_voice">Add voices to your list !!</string>
     <string name="voice_list_error_state">An error occurred with the server.</string>
     <string name="voice_list_error_logi">"loadVoices: Failed to retrieve player list: "</string>
