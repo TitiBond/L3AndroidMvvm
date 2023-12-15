@@ -76,7 +76,10 @@ class CameraActivity : AppCompatActivity() {
 
         val imageFile = uriToFile(imageUri, this)
 
+        viewModel.imagePath.postValue(imageFile.absolutePath)
         viewModel.analysePicture(imageFile)
+        displayImage(imageFile.absolutePath)
+        binding.titleEditText.setText("test")
     }
 
     private fun resetUI() {
