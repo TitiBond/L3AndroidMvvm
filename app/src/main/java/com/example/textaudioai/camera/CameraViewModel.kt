@@ -38,7 +38,7 @@ class CameraViewModel  : ViewModel() {
     val state = MutableLiveData<CameraViewModelState>()
 
     fun createImageFile(context: Context): Uri {
-        imageFile = File(context.filesDir, "picture.jpg")
+        imageFile = File(context.filesDir, "picture-${System.currentTimeMillis()}.jpg")
         return FileProvider.getUriForFile(context, "com.example.android.fileprovider", imageFile)
     }
 
@@ -111,12 +111,11 @@ class CameraViewModel  : ViewModel() {
 
     private fun addNewPlayer(title: String, text: String) {
         val newIndex = repository.getNewIndex()
-        val newPlayer = Player(
+        var newPlayer = Player(
             id = newIndex,
             title = title,
             image = 3,
             filePath = imagePath.value ?: "",
-            duration = 0.0,
             content = text,
             updatedAt = Date(),
             createdAt = Date()
@@ -125,11 +124,17 @@ class CameraViewModel  : ViewModel() {
         println("New Player Details: $newPlayer")
 
         try {
-            val success = repository.savePlayer(newPlayer)
-            if (success) {
+            val playerId = repository.savePlayer(newPlayer)
+            if (playerId == null) {
                 state.value = CameraViewModelState.Saved(newPlayer)
             } else {
-                state.value = CameraViewModelState.OCRError("Failed to save player")
+                newPlayer.id = playerId
+                val res = repository.updatePlayer(newPlayer)
+                if (res != null){
+                    state.value = CameraViewModelState.Saved(newPlayer)
+                }else{
+                    state.value = CameraViewModelState.OCRError("Failed to save player")
+                }
             }
         } catch (e: Exception) {
             state.value = CameraViewModelState.OCRError("Error: ${e.message}")

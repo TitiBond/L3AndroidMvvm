@@ -5,12 +5,10 @@ import io.paperdb.Paper
 import java.util.Date
 
 data class Player(
-    val id: Int,
+    var id: Int,
     var title: String,
     val image: Int,
     val filePath: String,
-    // Is it really necessary ?
-    val duration: Double,
     val content: String,
     val updatedAt: Date,
     val createdAt: Date,
@@ -21,7 +19,7 @@ interface PaperPlayersRepository {
     fun findAllPlayers(): List<Player>;
     fun findManyByTitle(filterText:String): List<Player>;
     fun findOnePlayerById(playerId: Int): Player?;
-    fun savePlayer(player: Player): Boolean;
+    fun savePlayer(player: Player): Int?;
     fun updatePlayer(player: Player): Player?;
     // Bool represent success or fail
     fun deletePlayerById(playerId: Int): Boolean;
@@ -53,21 +51,21 @@ class PlayersRepository: PaperPlayersRepository {
         return players.filter { it.title.lowercase().contains(filterText) }
     }
 
-    override fun savePlayer(player: Player): Boolean {
+    override fun savePlayer(player: Player): Int? {
         val players = findAllPlayers().toMutableList();
-        val index = players.indexOfFirst { it.title == player.title }
-        if (index != -1) return false;
+        val playerFound = players.find { it.title == player.title }
+        if (playerFound != null) return playerFound.id;
 
         players.add(player);
         saveAllPlayers(players);
-        return true;
+        return null;
     }
 
     private fun saveAllPlayers(players: List<Player>) {
         Paper.book().write(collection, players);
     }
 
-    override fun updatePlayer(player: Player): Player? {
+    override fun updatePlayer(player:Player): Player? {
         val players = findAllPlayers();
         if (players.isEmpty()) return null;
 
