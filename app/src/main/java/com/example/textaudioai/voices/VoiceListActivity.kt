@@ -60,12 +60,14 @@ class VoiceListActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener
         viewModel.state.observe(this){ state ->
             when(state){
                 is VoiceListViewModelState.Empty -> {
+                    adapter.voices = listOf();
                     binding.emptyListTextView.visibility = View.VISIBLE
                     binding.emptyListTextView.setText(R.string.voice_list_add_voice)
                     binding.refreshButton.visibility = View.GONE
                     binding.loadingProgressBar.visibility = View.GONE
                     binding.filterEditText.visibility = View.GONE
                     binding.dateFilterSpinner.visibility = View.GONE
+                    adapter.notifyDataSetChanged()
                 }
                 is VoiceListViewModelState.Full -> {
                     adapter.voices = state.voices
@@ -74,6 +76,7 @@ class VoiceListActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener
                     binding.loadingProgressBar.visibility = View.GONE
                     binding.filterEditText.visibility = View.VISIBLE
                     binding.dateFilterSpinner.visibility = View.VISIBLE
+                    adapter.notifyDataSetChanged()
                 }
                 is VoiceListViewModelState.Error -> {
                     Toast.makeText(this, R.string.voice_list_error_state, Toast.LENGTH_SHORT).show()
@@ -117,7 +120,6 @@ class VoiceListActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener
     override fun onResume() {
         super.onResume()
         viewModel.loadVoices()
-        adapter.notifyDataSetChanged()
     }
 
     //DROPDOWN MENU ON SELECT METHOD
