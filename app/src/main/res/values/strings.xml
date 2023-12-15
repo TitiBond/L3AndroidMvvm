@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">textAudioAi</string>
+
+    <!-- VOICE LIST -->
+    <string name="voice_list_filter_placeholder">Enter title...</string>
+    <string name="voice_list_add_voice">Add voices to your list !!</string>
+    <string name="voice_list_error_state">An error occurred with the server.</string>
+    <string name="voice_list_error_logi">"loadVoices: Failed to retrieve player list: "</string>
+    <string name="voice_list_loading_state">Loading...</string>
+    <string name="voice_list_refresh_button_text">Retry</string>
+
+    <string-array name="voice_list_sort_filter_texts">
+        <item>NONE</item>
+        <item>ASC</item>
+        <item>DESC</item>
+    </string-array>
+
+    <!-- PLAYER -->
+    <string name="player_media_failed_file_load">An error occurred when loading the audio file</string>
+
+    <!-- CAMERA -->
+    <string name="camera_open_camera">Open camera</string>
+    <string name="camera_choose_title">Choose a title…</string>
+    <string name="camera_open_gallery">Open gallery</string>
+    <string name="camera_validate_prompt">Validate</string>
+    <string name="camera_reject_prompt">Reject</string>
+    <string name="camera_test_upload">Test</string>
 </resources>
