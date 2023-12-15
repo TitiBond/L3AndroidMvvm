@@ -188,7 +188,7 @@ class CameraViewModel  : ViewModel() {
                 fileDirectory.mkdirs()
             }
 
-            val fileName = "$title.mp3"
+            val fileName = "image-$title-${System.currentTimeMillis()}.mp3"
             val outputFile = File(fileDirectory, fileName)
 
             val outputStream = FileOutputStream(outputFile)
