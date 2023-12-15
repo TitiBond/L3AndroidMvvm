@@ -97,7 +97,7 @@ class PlayerActivity : AppCompatActivity() {
                 binding.playerImageButton.setImageResource(android.R.drawable.ic_media_play);
             }
             is MediaPlayerState.Started -> {
-                binding.playerRewindimageButton.visibility = View.GONE;
+                binding.playerRewindimageButton.visibility = View.VISIBLE;
                 binding.playerImageButton.setImageResource(android.R.drawable.ic_media_pause);
             }
             is MediaPlayerState.Stopped -> {

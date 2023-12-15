@@ -7,8 +7,8 @@ import java.util.Date
 data class Player(
     val id: Int,
     var title: String,
-    val image: Int,
-    val filePath: String,
+    val image: String,
+    var filePath: String,
     // Is it really necessary ?
     val duration: Double,
     val content: String,

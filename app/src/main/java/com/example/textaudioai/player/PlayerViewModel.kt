@@ -46,7 +46,7 @@ class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
     }
 
     fun loadMediaPlayer(filePath: String) {
-        //player.loadFile(filePath);
+        player.loadFile(filePath);
     }
 
     fun removePlayer(playerId: Int): Boolean {
