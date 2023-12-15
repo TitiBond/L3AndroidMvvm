@@ -19,7 +19,7 @@ data class Player(
 interface PaperPlayersRepository {
     @Throws(Exception::class)
     fun findAllPlayers(): List<Player>;
-    fun findManyByTOBEDEFINED(): List<Player>;
+    fun findManyByTitle(filterText:String): List<Player>;
     fun findOnePlayerById(playerId: Int): Player?;
     fun savePlayer(player: Player): Boolean;
     fun updatePlayer(player: Player): Player?;
@@ -48,8 +48,9 @@ class PlayersRepository: PaperPlayersRepository {
         return players.find { it.id == playerId };
     }
 
-    override fun findManyByTOBEDEFINED(): List<Player> {
-        TODO("Retrieve all players, iter and filter from a filter parameter of this function")
+    override fun findManyByTitle(filterText: String): List<Player> {
+        val players = findAllPlayers()
+        return players.filter { it.title.lowercase().contains(filterText) }
     }
 
     override fun savePlayer(player: Player): Boolean {
@@ -97,4 +98,5 @@ class PlayersRepository: PaperPlayersRepository {
         if (players.isEmpty()) return 1;
         return players.last().id + 1
     }
+
 }
