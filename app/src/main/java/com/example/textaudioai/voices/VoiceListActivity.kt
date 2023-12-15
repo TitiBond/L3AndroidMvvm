@@ -133,9 +133,4 @@ class VoiceListActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
     }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadVoices()
-    }
 }
