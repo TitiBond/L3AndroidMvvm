@@ -15,6 +15,7 @@ val resMockup: List<Player> = listOf(voicesMockup[0])
 val sortAscResMockup: List<Player> = listOf(voicesMockup[3], voicesMockup[1], voicesMockup[2],
     voicesMockup[0])
 
+val sortTextRobeResMockup: List<Player> = listOf(voicesMockup[2], voicesMockup[3])
 val sortAscTextResMockup: List<Player> = listOf(voicesMockup[3], voicesMockup[2])
 
 
