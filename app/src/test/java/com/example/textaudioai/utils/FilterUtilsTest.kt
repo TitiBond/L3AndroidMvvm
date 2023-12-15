@@ -18,10 +18,9 @@ class FilterUtilsTest {
         //ARRANGE
         val filterText = "bo"
         val dateFilterType = DateFilteredType.NONE
-        var voicesResult : List<Player>
 
         //ACT
-        voicesResult = filterVoices(voicesMockup,filterText,dateFilterType)
+         var voicesResult = filterVoices(voicesMockup,filterText,dateFilterType)
 
         //ASSERT
         Assert.assertEquals(

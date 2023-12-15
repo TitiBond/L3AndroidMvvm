@@ -64,7 +64,6 @@ class VoiceListViewModel: ViewModel() {
 
     fun filter(){
         filteredVoices = filterVoices(voices,filterText,dateFilterType)
-        Log.i("ici", "filter: $filteredVoices")
         state.value = VoiceListViewModelState.Full(filteredVoices)
     }
 }
