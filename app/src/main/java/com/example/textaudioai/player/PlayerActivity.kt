@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
 import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityPlayerBinding
 import com.example.textaudioai.player.media.MediaPlayerWrapper
@@ -25,9 +26,24 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root);
 
         val playerId = intent.getIntExtra("playerId", -1);
+        val backButton = binding.include.backButton;
+        val deleteButton = binding.include.deleteButton;
 
         val player = MediaPlayerWrapper(MediaPlayer(), viewModel);
         viewModel.player = player;
+
+        backButton.setOnClickListener {
+            finish();
+        }
+
+        deleteButton.setOnClickListener {
+            val success = viewModel.removePlayer(playerId);
+            if (success) {
+                finish()
+            } else {
+                Toast.makeText(this, "Failed to remove the player", Toast.LENGTH_SHORT).show();
+            }
+        }
 
         viewModel.playerStateLiveData.observe(this) {
             updateUI(it);
@@ -77,11 +93,11 @@ class PlayerActivity : AppCompatActivity() {
     private fun updatePlayerButtonUI(state: MediaPlayerState) {
         when (state) {
             is MediaPlayerState.Idle -> {
-                binding.playerRewindimageButton.visibility = View.INVISIBLE;
+                binding.playerRewindimageButton.visibility = View.GONE;
                 binding.playerImageButton.setImageResource(android.R.drawable.ic_media_play);
             }
             is MediaPlayerState.Started -> {
-                binding.playerRewindimageButton.visibility = View.VISIBLE;
+                binding.playerRewindimageButton.visibility = View.GONE;
                 binding.playerImageButton.setImageResource(android.R.drawable.ic_media_pause);
             }
             is MediaPlayerState.Stopped -> {
