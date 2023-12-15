@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.example.textaudioai.R
 import com.example.textaudioai.repositories.PaperPlayersRepository
 import com.example.textaudioai.repositories.Player
+import com.example.textaudioai.utils.DateFilteredType
+import com.example.textaudioai.utils.filterVoices
 import java.util.Date
 
 sealed class VoiceListViewModelState{
@@ -23,7 +25,7 @@ class VoiceListViewModel: ViewModel() {
     private var filteredVoices: List<Player> = listOf()
     val state = MutableLiveData<VoiceListViewModelState>()
     private var filterText: String = ""
-    private var dateFilterType: Int = 0
+    private var dateFilterType: DateFilteredType = DateFilteredType.NONE
 
     // TODO LINES TO DELETE WHEN ADD VOICE ITEM DONE
  /*private val voicesMockup = listOf(
@@ -55,19 +57,15 @@ class VoiceListViewModel: ViewModel() {
         filter()
     }
 
-    fun updateDateFilter(value:Int){
+    fun updateDateFilter(value:DateFilteredType){
         dateFilterType = value
         filter()
     }
 
-
     fun filter(){
-        filteredVoices = voices.filter { it.title.lowercase().contains(filterText) }
-        when(dateFilterType){
-            0-> state.value = VoiceListViewModelState.Full(filteredVoices.sortedBy { it.id })
-            1-> state.value = VoiceListViewModelState.Full(filteredVoices.sortedBy { it.updatedAt })
-            2-> state.value = VoiceListViewModelState.Full(filteredVoices.sortedByDescending { it.updatedAt })
-        }
+        filteredVoices = filterVoices(voices,filterText,dateFilterType)
+        Log.i("ici", "filter: $filteredVoices")
+        state.value = VoiceListViewModelState.Full(filteredVoices)
     }
 }
 

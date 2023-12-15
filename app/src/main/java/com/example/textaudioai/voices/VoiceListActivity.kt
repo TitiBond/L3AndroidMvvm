@@ -18,6 +18,7 @@ import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityVoiceListBinding
 import com.example.textaudioai.camera.CameraActivity
 import com.example.textaudioai.repositories.PlayersRepository
+import com.example.textaudioai.utils.DateFilteredType
 import io.paperdb.Paper
 
 private const val TAG = "VoicesViewModel";
@@ -120,7 +121,13 @@ class VoiceListActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     //DROPDOWN MENU ON SELECT METHOD
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-        viewModel.updateDateFilter(pos)
+        val f = when(pos){
+            0->  DateFilteredType.NONE
+            1-> DateFilteredType.ASC
+            2-> DateFilteredType.DESC
+            else -> DateFilteredType.NONE
+        }
+        viewModel.updateDateFilter(f)
         adapter.notifyDataSetChanged()
     }
 
