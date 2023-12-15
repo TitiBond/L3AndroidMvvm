@@ -97,5 +97,16 @@
             app:layout_constraintStart_toStartOf="@+id/photoImageView"
             app:layout_constraintTop_toBottomOf="@+id/openGalleryButton" />
 
+        <ProgressBar
+            android:id="@+id/cameraProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:mirrorForRtl="false"
+            app:layout_constraintEnd_toEndOf="@+id/photoImageView"
+            app:layout_constraintStart_toStartOf="@+id/photoImageView"
+            app:layout_constraintTop_toTopOf="@+id/titleEditText" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
