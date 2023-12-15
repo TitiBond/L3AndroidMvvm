@@ -1,5 +1,6 @@
 package com.example.textaudioai.camera
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -11,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityCameraBinding
 import com.example.textaudioai.repositories.PlayersRepository
 import java.io.File
@@ -47,6 +49,10 @@ class CameraActivity : AppCompatActivity() {
             openGallery()
         }
 
+        binding.testUploadImageButton.setOnClickListener {
+            launchTest()
+        }
+
         viewModel.state.observe(this) {
             updateUI(it!!)
         }
@@ -59,9 +65,24 @@ class CameraActivity : AppCompatActivity() {
     resetUI()
     }
 
+    private fun launchTest() {
+        val drawableId = R.drawable.image
+        val imageUri = Uri.Builder()
+            .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+            .authority(resources.getResourcePackageName(drawableId))
+            .appendPath(resources.getResourceTypeName(drawableId))
+            .appendPath(resources.getResourceEntryName(drawableId))
+            .build()
+
+        val imageFile = uriToFile(imageUri, this)
+
+        viewModel.analysePicture(imageFile)
+    }
+
     private fun resetUI() {
         binding.openCameraButton.visibility = View.VISIBLE
         binding.openGalleryButton.visibility = View.VISIBLE
+        binding.testUploadImageButton.visibility = View.VISIBLE
         binding.validatePromptButton.visibility = View.GONE
         binding.rejectPromptButton.visibility = View.GONE
         binding.apiResponseTextView.visibility = View.GONE
@@ -79,18 +100,20 @@ class CameraActivity : AppCompatActivity() {
             }
 
             is CameraViewModelState.OCRSuccess -> {
-                displayText(state.text)
+                displayText(state.message)
                 showValidationButtons()
             }
             is CameraViewModelState.PromptRejected -> {
                 resetUI()
             }
             is CameraViewModelState.PromptValidated -> {
-
+                Toast.makeText(this, "Player created successfully!", Toast.LENGTH_LONG).show()
             }
             is CameraViewModelState.Saved -> {
                 finish()
             }
+
+            else -> {}
         }
     }
 
@@ -101,6 +124,8 @@ class CameraActivity : AppCompatActivity() {
 
         binding.validatePromptButton.visibility = View.VISIBLE
         binding.rejectPromptButton.visibility = View.VISIBLE
+
+        binding.testUploadImageButton.visibility = View.GONE
 
         binding.validatePromptButton.setOnClickListener {
             val title = binding.titleEditText.text.toString()
