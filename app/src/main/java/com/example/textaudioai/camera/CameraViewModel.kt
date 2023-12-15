@@ -3,6 +3,7 @@ package com.example.textaudioai.camera
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
@@ -22,7 +23,7 @@ sealed class CameraViewModelState {
 
     data class Loading(val message: String): CameraViewModelState()
     data class OCRError(val message: String): CameraViewModelState()
-    data class OCRSuccess(val text: String): CameraViewModelState()
+    data class OCRSuccess(val message: String): CameraViewModelState()
     data class PromptRejected(val message: String): CameraViewModelState()
     data class PromptValidated(val text: String): CameraViewModelState()
     data class Saved(val a: Any): CameraViewModelState()
@@ -45,7 +46,7 @@ class CameraViewModel  : ViewModel() {
     private fun setImagePath(path: String) {
         imagePath.value = path
     }
-    private fun analysePicture(imageFile: File) {
+    fun analysePicture(imageFile: File) {
         state.value = CameraViewModelState.Loading("Processing...")
 
         // CALL API
