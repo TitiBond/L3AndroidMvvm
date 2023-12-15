@@ -5,10 +5,10 @@ import com.example.textaudioai.repositories.Player
 import java.util.Date
 
 val voicesMockup: List<Player> = listOf(
-Player(1,"Bonjour", 1,"","", Date(2024,11,20), Date() ),
-Player(2,"coucou",1,"","", Date(), Date() ),
-Player(3,"Robert",1,"","", Date(), Date() ),
-Player(4,"Roberto",1,"","", Date(2023), Date() ))
+Player(1,"Bonjour", "","","", Date(2024,11,20), Date() ),
+Player(2,"coucou","","","", Date(), Date() ),
+Player(3,"Robert","","","", Date(), Date() ),
+Player(4,"Roberto","","","", Date(2023), Date() ))
 
 val resMockup: List<Player> = listOf(voicesMockup[0])
 
