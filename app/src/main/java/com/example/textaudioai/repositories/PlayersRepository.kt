@@ -7,8 +7,8 @@ import java.util.Date
 data class Player(
     var id: Int,
     var title: String,
-    val image: Int,
-    val filePath: String,
+    val image: String,
+    var filePath: String,
     val content: String,
     val updatedAt: Date,
     val createdAt: Date,

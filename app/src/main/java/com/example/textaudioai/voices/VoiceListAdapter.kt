@@ -32,7 +32,7 @@ class VoiceListAdapter(var voices: List<Player>): RecyclerView.Adapter<VoiceList
         val voice = voices[position]
 
         with(holder.binding){
-            voiceItemImageView.setImageBitmap(BitmapFactory.decodeFile(voice.filePath))
+            voiceItemImageView.setImageBitmap(BitmapFactory.decodeFile(voice.image))
             voiceItemTitleTextView.text = voice.title
             voiceItemContentTextView.text = voice.content
             voiceITemDatetextView.text = SimpleDateFormat("dd/MM/yy").format(voice.updatedAt)

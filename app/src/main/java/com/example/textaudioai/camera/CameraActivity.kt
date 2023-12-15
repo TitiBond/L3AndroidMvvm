@@ -1,5 +1,6 @@
 package com.example.textaudioai.camera
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -11,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import com.example.textaudioai.R
 import com.example.textaudioai.databinding.ActivityCameraBinding
 import com.example.textaudioai.repositories.PlayersRepository
 import java.io.File
@@ -28,23 +30,33 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val retrofit = Retrofit.Builder()
+        val ninjaRetrofit = Retrofit.Builder()
             .baseUrl("https://api.api-ninjas.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        viewModel.repository = PlayersRepository();
+        val elevenlabsRetrofit = Retrofit.Builder()
+            .baseUrl("https://api.elevenlabs.io/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        val api = retrofit.create(NinjasApi::class.java)
-        viewModel.api = api
+        viewModel.repository = PlayersRepository();
+        viewModel.ninjaApi = ninjaRetrofit.create(NinjasApi::class.java)
+        viewModel.elevenlabsApi =elevenlabsRetrofit.create(ElevenlabsApi::class.java)
 
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.openCameraButton.setOnClickListener {
             takePicture()
         }
+
         binding.openGalleryButton.setOnClickListener {
             openGallery()
+        }
+
+        binding.testUploadImageButton.setOnClickListener {
+            launchTest()
         }
 
         viewModel.state.observe(this) {
@@ -56,12 +68,30 @@ class CameraActivity : AppCompatActivity() {
             displayImage(path)
         }
 
-    resetUI()
+        resetUI()
+    }
+
+    private fun launchTest() {
+        val drawableId = R.drawable.image
+        val imageUri = Uri.Builder()
+            .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+            .authority(resources.getResourcePackageName(drawableId))
+            .appendPath(resources.getResourceTypeName(drawableId))
+            .appendPath(resources.getResourceEntryName(drawableId))
+            .build()
+
+        val imageFile = uriToFile(imageUri, this)
+
+        viewModel.imagePath.postValue(imageFile.absolutePath)
+        viewModel.analysePicture(imageFile)
+        displayImage(imageFile.absolutePath)
+        binding.titleEditText.setText("test")
     }
 
     private fun resetUI() {
         binding.openCameraButton.visibility = View.VISIBLE
         binding.openGalleryButton.visibility = View.VISIBLE
+        binding.testUploadImageButton.visibility = View.VISIBLE
         binding.validatePromptButton.visibility = View.GONE
         binding.rejectPromptButton.visibility = View.GONE
         binding.apiResponseTextView.visibility = View.GONE
@@ -79,18 +109,20 @@ class CameraActivity : AppCompatActivity() {
             }
 
             is CameraViewModelState.OCRSuccess -> {
-                displayText(state.text)
+                displayText(state.message)
                 showValidationButtons()
             }
             is CameraViewModelState.PromptRejected -> {
                 resetUI()
             }
             is CameraViewModelState.PromptValidated -> {
-
+                Toast.makeText(this, "Player created successfully!", Toast.LENGTH_LONG).show()
             }
             is CameraViewModelState.Saved -> {
                 finish()
             }
+
+            else -> {}
         }
     }
 
@@ -101,6 +133,8 @@ class CameraActivity : AppCompatActivity() {
 
         binding.validatePromptButton.visibility = View.VISIBLE
         binding.rejectPromptButton.visibility = View.VISIBLE
+
+        binding.testUploadImageButton.visibility = View.GONE
 
         binding.validatePromptButton.setOnClickListener {
             val title = binding.titleEditText.text.toString()
