@@ -98,11 +98,25 @@ class CameraActivity : AppCompatActivity() {
         binding.photoImageView.setImageBitmap(null)
         binding.apiResponseTextView.text = ""
         binding.titleEditText.text.clear()
+        binding.cameraProgressBar.visibility = View.GONE
+    }
+
+    private fun setLoading() {
+        binding.openCameraButton.visibility = View.GONE
+        binding.openGalleryButton.visibility = View.GONE
+        binding.testUploadImageButton.visibility = View.GONE
+        binding.validatePromptButton.visibility = View.GONE
+        binding.rejectPromptButton.visibility = View.GONE
+
+
+        binding.cameraProgressBar.visibility = View.VISIBLE
     }
 
     private fun updateUI(state: CameraViewModelState) {
         when (state) {
-            is CameraViewModelState.Loading -> {}
+            is CameraViewModelState.Loading -> {
+                setLoading()
+            }
 
             is CameraViewModelState.OCRError -> {
                 Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
@@ -121,12 +135,11 @@ class CameraActivity : AppCompatActivity() {
             is CameraViewModelState.Saved -> {
                 finish()
             }
-
-            else -> {}
         }
     }
 
     private fun showValidationButtons() {
+        binding.cameraProgressBar.visibility = View.GONE
         binding.apiResponseTextView.visibility = View.VISIBLE
         binding.openCameraButton.visibility = View.GONE
         binding.openGalleryButton.visibility = View.GONE
