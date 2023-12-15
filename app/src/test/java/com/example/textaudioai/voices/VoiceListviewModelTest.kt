@@ -25,7 +25,6 @@ class VoiceListviewModelTest {
         model.repository = db
         whenever(db.findAllPlayers()).thenReturn(voicesMockup)
 
-
         //ACT
         model.loadVoices()
 
