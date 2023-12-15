@@ -46,7 +46,16 @@ class PlayerViewModel(): ViewModel(), MediaPlayerCustom.Listener {
     }
 
     fun loadMediaPlayer(filePath: String) {
-        player.loadFile(filePath);
+        //player.loadFile(filePath);
+    }
+
+    fun removePlayer(playerId: Int): Boolean {
+        return try {
+            repository.deletePlayerById(playerId);
+        } catch(err: Exception) {
+            Log.i(TAG, "removePlayer: Failed to remove the plauyer", err);
+            false;
+        }
     }
 
     fun handlePlaybackState() {
