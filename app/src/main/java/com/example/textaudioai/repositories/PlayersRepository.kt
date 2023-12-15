@@ -1,5 +1,6 @@
 package com.example.textaudioai.repositories
 
+import android.util.Log
 import io.paperdb.Paper
 import java.util.Date
 
@@ -52,11 +53,11 @@ class PlayersRepository: PaperPlayersRepository {
     }
 
     override fun savePlayer(player: Player): Boolean {
-        val players = findAllPlayers();
+        val players = findAllPlayers().toMutableList();
         val index = players.indexOfFirst { it.title == player.title }
         if (index != -1) return false;
 
-        players.plus(player);
+        players.add(player);
         saveAllPlayers(players);
         return true;
     }
@@ -92,7 +93,8 @@ class PlayersRepository: PaperPlayersRepository {
     }
 
     override fun getNewIndex(): Int {
-        val players = findAllPlayers();
-        return players.last().id + 1;
+        val players = findAllPlayers()
+        if (players.isEmpty()) return 1;
+        return players.last().id + 1
     }
 }

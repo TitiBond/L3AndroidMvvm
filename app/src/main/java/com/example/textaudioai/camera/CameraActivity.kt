@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.example.textaudioai.databinding.ActivityCameraBinding
+import com.example.textaudioai.repositories.PlayersRepository
 import java.io.File
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,6 +32,8 @@ class CameraActivity : AppCompatActivity() {
             .baseUrl("https://api.api-ninjas.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        viewModel.repository = PlayersRepository();
 
         val api = retrofit.create(NinjasApi::class.java)
         viewModel.api = api

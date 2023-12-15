@@ -74,4 +74,9 @@ class VoiceListActivity: AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.loadVoices()
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadVoices()
+    }
 }

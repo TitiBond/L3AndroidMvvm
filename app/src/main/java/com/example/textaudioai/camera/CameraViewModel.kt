@@ -7,6 +7,8 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.textaudioai.repositories.PaperPlayersRepository
+import com.example.textaudioai.repositories.Player
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -14,6 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.Date
 
 sealed class CameraViewModelState {
 
@@ -24,11 +27,13 @@ sealed class CameraViewModelState {
     data class PromptValidated(val text: String): CameraViewModelState()
     data class Saved(val a: Any): CameraViewModelState()
 }
-class CameraViewModel: ViewModel() {
+class CameraViewModel  : ViewModel() {
 
+    lateinit var repository: PaperPlayersRepository
     val imagePath = MutableLiveData<String>()
     lateinit var api: NinjasApi
     private lateinit var imageFile: File
+
 
     val state = MutableLiveData<CameraViewModelState>()
 
@@ -91,7 +96,7 @@ class CameraViewModel: ViewModel() {
 
     fun validatePrompt(title: String, text: String) {
         state.value = CameraViewModelState.PromptValidated("Yeaaahh !!")
-        saveTextWithTitle(title, text)
+        addNewPlayer(title, text)
     }
 
     fun rejectPrompt() {
@@ -103,8 +108,31 @@ class CameraViewModel: ViewModel() {
         state.value = CameraViewModelState.OCRSuccess(formattedString)
     }
 
-    private fun saveTextWithTitle(title: String, text: String) {
-        println(title)
-        println(text)
+
+    private fun addNewPlayer(title: String, text: String) {
+        val newIndex = repository.getNewIndex()
+        val newPlayer = Player(
+            id = newIndex,
+            title = title,
+            image = 3,
+            filePath = imagePath.value ?: "",
+            duration = 0.0,
+            content = text,
+            updatedAt = Date(),
+            createdAt = Date()
+        )
+
+        println("New Player Details: $newPlayer")
+
+        try {
+            val success = repository.savePlayer(newPlayer)
+            if (success) {
+                state.value = CameraViewModelState.Saved(newPlayer)
+            } else {
+                state.value = CameraViewModelState.OCRError("Failed to save player")
+            }
+        } catch (e: Exception) {
+            state.value = CameraViewModelState.OCRError("Error: ${e.message}")
+        }
     }
 }
