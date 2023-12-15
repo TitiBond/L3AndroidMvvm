@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.textaudioai.databinding.ItemVoiceListBinding
 import com.example.textaudioai.player.PlayerActivity
 import com.example.textaudioai.repositories.Player
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.logging.SimpleFormatter
 
 class VoiceListAdapter(var voices: List<Player>): RecyclerView.Adapter<VoiceListAdapter.ViewHolder>() {
 
@@ -30,7 +34,8 @@ class VoiceListAdapter(var voices: List<Player>): RecyclerView.Adapter<VoiceList
         with(holder.binding){
             voiceItemImageView.setImageBitmap(BitmapFactory.decodeFile(voice.filePath))
             voiceItemTitleTextView.text = voice.title
-            voiceITemDurationtextView.text = "${voice.duration} secondes"
+            voiceItemContentTextView.text = voice.content
+            voiceITemDatetextView.text = SimpleDateFormat("dd/MM/yy").format(voice.updatedAt)
             voiceItem.setOnClickListener {
                 val context = it.context
                 val intent = Intent(context,PlayerActivity::class.java)

@@ -22,19 +22,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
+        android:layout_marginTop="4dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/voiceItemImageView"
         app:layout_constraintTop_toTopOf="@+id/voiceItemImageView"
         tools:text="Titre test" />
 
     <TextView
-        android:id="@+id/voiceITemDurationtextView"
+        android:id="@+id/voiceITemDatetextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/voiceItemImageView"
-        tools:text="TextView" />
+        tools:text="12/06/23" />
+
+    <TextView
+        android:id="@+id/voiceItemContentTextView"
+        android:layout_width="196dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/voiceITemDatetextView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/voiceItemImageView"
+        app:layout_constraintTop_toBottomOf="@+id/voiceItemTitleTextView"
+        tools:text="ceci est un exemple d'un extrait du text du content dzdz dzdza eazda azd a dazdazd a dazda zdaz d azd azd azdaz  azd azdaz daz" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
