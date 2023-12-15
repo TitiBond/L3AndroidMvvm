@@ -117,6 +117,7 @@ class VoiceListActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener
     override fun onResume() {
         super.onResume()
         viewModel.loadVoices()
+        adapter.notifyDataSetChanged()
     }
 
     //DROPDOWN MENU ON SELECT METHOD
