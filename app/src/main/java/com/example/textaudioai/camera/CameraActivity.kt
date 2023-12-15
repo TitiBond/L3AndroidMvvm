@@ -28,21 +28,27 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val retrofit = Retrofit.Builder()
+        val ninjaRetrofit = Retrofit.Builder()
             .baseUrl("https://api.api-ninjas.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        viewModel.repository = PlayersRepository();
+        val elevenlabsRetrofit = Retrofit.Builder()
+            .baseUrl("https://api.elevenlabs.io/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        val api = retrofit.create(NinjasApi::class.java)
-        viewModel.api = api
+        viewModel.repository = PlayersRepository();
+        viewModel.ninjaApi = ninjaRetrofit.create(NinjasApi::class.java)
+        viewModel.elevenlabsApi =elevenlabsRetrofit.create(ElevenlabsApi::class.java)
 
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.openCameraButton.setOnClickListener {
             takePicture()
         }
+
         binding.openGalleryButton.setOnClickListener {
             openGallery()
         }
@@ -56,7 +62,7 @@ class CameraActivity : AppCompatActivity() {
             displayImage(path)
         }
 
-    resetUI()
+        resetUI()
     }
 
     private fun resetUI() {
