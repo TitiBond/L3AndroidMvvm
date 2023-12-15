@@ -1,16 +1,23 @@
 package com.example.textaudioai.camera
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import okhttp3.MediaType
+import com.example.textaudioai.repositories.PaperPlayersRepository
+import com.example.textaudioai.repositories.Player
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.Date
+
 sealed class CameraViewModelState {
 
     data class Loading(val message: String): CameraViewModelState()
@@ -20,17 +27,25 @@ sealed class CameraViewModelState {
     data class PromptValidated(val text: String): CameraViewModelState()
     data class Saved(val a: Any): CameraViewModelState()
 }
-class CameraViewModel: ViewModel() {
+class CameraViewModel  : ViewModel() {
 
+    lateinit var repository: PaperPlayersRepository
     val imagePath = MutableLiveData<String>()
     lateinit var api: NinjasApi
+    private lateinit var imageFile: File
+
 
     val state = MutableLiveData<CameraViewModelState>()
 
-    fun setImagePath(path: String) {
+    fun createImageFile(context: Context): Uri {
+        imageFile = File(context.filesDir, "picture.jpg")
+        return FileProvider.getUriForFile(context, "com.example.android.fileprovider", imageFile)
+    }
+
+    private fun setImagePath(path: String) {
         imagePath.value = path
     }
-    fun analysePicture(imageFile: File) {
+    private fun analysePicture(imageFile: File) {
         state.value = CameraViewModelState.Loading("Processing...")
 
         // CALL API
@@ -61,9 +76,27 @@ class CameraViewModel: ViewModel() {
 
     }
 
+    fun handleActivityResult(resultCode: Int, data: Intent?, fileProvider: (Uri) -> File) {
+        if (resultCode == Activity.RESULT_OK) {
+            val imageUri = data?.data
+            if (imageUri != null) {
+                val imageFile = fileProvider(imageUri)
+                analysePicture(imageFile)
+                setImagePath(imageFile.absolutePath)
+            } else {
+                imageFile.let { file ->
+                    analysePicture(file)
+                    setImagePath(file.absolutePath)
+                }
+            }
+        } else {
+            state.value = CameraViewModelState.OCRError("Action cancelled or failed")
+        }
+    }
+
     fun validatePrompt(title: String, text: String) {
         state.value = CameraViewModelState.PromptValidated("Yeaaahh !!")
-        saveTextWithTitle(title, text)
+        addNewPlayer(title, text)
     }
 
     fun rejectPrompt() {
@@ -75,9 +108,31 @@ class CameraViewModel: ViewModel() {
         state.value = CameraViewModelState.OCRSuccess(formattedString)
     }
 
-    private fun saveTextWithTitle(title: String, text: String) {
-        println(title)
-        println(text)
-    }
 
+    private fun addNewPlayer(title: String, text: String) {
+        val newIndex = repository.getNewIndex()
+        val newPlayer = Player(
+            id = newIndex,
+            title = title,
+            image = 3,
+            filePath = imagePath.value ?: "",
+            duration = 0.0,
+            content = text,
+            updatedAt = Date(),
+            createdAt = Date()
+        )
+
+        println("New Player Details: $newPlayer")
+
+        try {
+            val success = repository.savePlayer(newPlayer)
+            if (success) {
+                state.value = CameraViewModelState.Saved(newPlayer)
+            } else {
+                state.value = CameraViewModelState.OCRError("Failed to save player")
+            }
+        } catch (e: Exception) {
+            state.value = CameraViewModelState.OCRError("Error: ${e.message}")
+        }
+    }
 }

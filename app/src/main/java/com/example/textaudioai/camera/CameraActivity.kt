@@ -1,6 +1,5 @@
 package com.example.textaudioai.camera
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -12,13 +11,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.content.FileProvider
 import com.example.textaudioai.databinding.ActivityCameraBinding
-import okhttp3.MultipartBody
+import com.example.textaudioai.repositories.PlayersRepository
 import java.io.File
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.FileOutputStream
@@ -29,25 +24,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraBinding
 
     private val viewModel: CameraViewModel by viewModels()
-    private lateinit var imageFile: File
 
-    private val getResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val isCamera = it.data == null || it.data!!.data == null
-                // checks if the source is camera or gallery
-                if (isCamera) {
-                    viewModel.analysePicture(imageFile)
-                    viewModel.setImagePath(imageFile.absolutePath)
-                } else {
-                    it.data?.data?.let { uri ->
-                        val galleryImageFile = uriToFile(uri, this)
-                        viewModel.analysePicture(galleryImageFile)
-                        viewModel.setImagePath(galleryImageFile.absolutePath)
-                    }
-                }
-            }
-        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,6 +32,8 @@ class CameraActivity : AppCompatActivity() {
             .baseUrl("https://api.api-ninjas.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        viewModel.repository = PlayersRepository();
 
         val api = retrofit.create(NinjasApi::class.java)
         viewModel.api = api
@@ -77,9 +56,18 @@ class CameraActivity : AppCompatActivity() {
             displayImage(path)
         }
 
+    resetUI()
+    }
+
+    private fun resetUI() {
+        binding.openCameraButton.visibility = View.VISIBLE
+        binding.openGalleryButton.visibility = View.VISIBLE
         binding.validatePromptButton.visibility = View.GONE
         binding.rejectPromptButton.visibility = View.GONE
-
+        binding.apiResponseTextView.visibility = View.GONE
+        binding.photoImageView.setImageBitmap(null)
+        binding.apiResponseTextView.text = ""
+        binding.titleEditText.text.clear()
     }
 
     private fun updateUI(state: CameraViewModelState) {
@@ -98,7 +86,7 @@ class CameraActivity : AppCompatActivity() {
                 resetUI()
             }
             is CameraViewModelState.PromptValidated -> {
-                finish()
+
             }
             is CameraViewModelState.Saved -> {
                 finish()
@@ -107,6 +95,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun showValidationButtons() {
+        binding.apiResponseTextView.visibility = View.VISIBLE
         binding.openCameraButton.visibility = View.GONE
         binding.openGalleryButton.visibility = View.GONE
 
@@ -123,26 +112,11 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun showCameraButtons() {
-        binding.openCameraButton.visibility = View.VISIBLE
-        binding.openGalleryButton.visibility = View.VISIBLE
-        binding.validatePromptButton.visibility = View.GONE
-        binding.rejectPromptButton.visibility = View.GONE
-    }
-
     private fun takePicture() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        // stores image to display it in activity
-        imageFile = File(filesDir, "picture.jpg")
-
-        val uri = FileProvider.getUriForFile(
-            this,
-            "com.example.android.fileprovider",
-            imageFile
-        )
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+        val uri = viewModel.createImageFile(this)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, uri)
+        }
         getResult.launch(intent)
     }
 
@@ -163,6 +137,14 @@ class CameraActivity : AppCompatActivity() {
         binding.apiResponseTextView.text = text
     }
 
+    // IMAGE UPLOAD FROM BOTH CAMERA AND GALLERY
+    private val getResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.handleActivityResult(result.resultCode, result.data) { uri ->
+                uriToFile(uri, this)
+            }
+        }
+
     private fun uriToFile(uri: Uri, context: Context): File {
         val contentResolver = context.contentResolver
         val tempFile = File.createTempFile("temp_image", null, context.cacheDir)
@@ -170,14 +152,5 @@ class CameraActivity : AppCompatActivity() {
         val outputStream = FileOutputStream(tempFile)
         inputStream.copyTo(outputStream)
         return tempFile
-    }
-
-    private fun resetUI() {
-        binding.photoImageView.setImageBitmap(null)
-
-        binding.apiResponseTextView.text = ""
-        binding.titleEditText.text.clear()
-
-        showCameraButtons()
     }
 }

@@ -1,6 +1,7 @@
 package com.example.textaudioai.voices
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,7 @@ class VoiceListAdapter(var voices: List<Player>): RecyclerView.Adapter<VoiceList
         val voice = voices[position]
 
         with(holder.binding){
-            voiceItemImageView.setImageResource(voice.image)
+            voiceItemImageView.setImageBitmap(BitmapFactory.decodeFile(voice.filePath))
             voiceItemTitleTextView.text = voice.title
             voiceITemDurationtextView.text = "${voice.duration} secondes"
             voiceItem.setOnClickListener {
